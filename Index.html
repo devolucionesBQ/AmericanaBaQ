@@ -1,0 +1,2012 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Módulo de Devoluciones - Sede Barranquilla</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root{
+      --azul-noche:#07043B; --azul-claro:#41B6FF; --azul-institucional:#00579D;
+      --naranja:#FF9824; --texto:#0F172A; --gris:#667085; --borde:#E5E7EB;
+      --rojo:#D90429; --verde:#2EA44F;
+      --sombra-fuerte:0 35px 90px rgba(0,0,0,.38); --sombra-suave:0 18px 45px rgba(15,23,42,.14);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;font-family:"Montserrat","Segoe UI",Arial,sans-serif;color:var(--texto);background:#07043B;overflow-x:hidden}
+
+    .bg-layer{position:fixed;inset:0;z-index:0;background:
+      linear-gradient(90deg,rgba(7,4,59,.96),rgba(7,4,59,.78),rgba(7,4,59,.95)),
+      url("https://americanabaq.edu.co/wp-content/uploads/2025/09/BANNERS-GENERALES-AMERICANA-1.webp");
+      background-size:cover;background-position:center}
+
+    .top-header{position:relative;z-index:5;width:100%;min-height:150px;
+      background:radial-gradient(circle at 80% 30%,rgba(65,182,255,.14),transparent 28%),linear-gradient(90deg,#07043B 0%,#0A0A63 50%,#07043B 100%);
+      box-shadow:0 10px 35px rgba(0,0,0,.26);overflow:hidden}
+    .header-overlay{padding:18px 38px}
+    .header-content{max-width:1320px;margin:0 auto;min-height:112px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:30px}
+    .header-title-block{text-align:center;color:#fff;padding-left:190px}
+    .header-title{margin:0;font-size:clamp(28px,3vw,48px);line-height:.98;font-weight:900;letter-spacing:-.055em;text-transform:uppercase}
+    .header-subtitle{margin:12px 0 0;font-size:clamp(13px,1.3vw,20px);font-weight:900;letter-spacing:.20em;text-transform:uppercase;color:#D7B7FF}
+    .header-anniversary{display:flex;justify-content:flex-end}
+    .logo-20{width:min(340px,34vw);height:auto;display:block;object-fit:contain;filter:drop-shadow(0 12px 24px rgba(0,0,0,.34))}
+
+    .page{position:relative;z-index:5;min-height:calc(100vh - 150px);display:flex;align-items:flex-start;justify-content:center;padding:44px 22px}
+    .app{width:min(1050px,100%);background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(248,250,255,.96));border-radius:26px;
+      box-shadow:var(--sombra-fuerte);padding:48px 54px;text-align:center;border:1px solid rgba(255,255,255,.75);position:relative;overflow:hidden}
+    .app.ancho{width:min(1280px,100%);text-align:left}
+    .app::before{content:"";position:absolute;top:0;left:8%;right:8%;height:5px;border-radius:999px;background:linear-gradient(90deg,var(--azul-claro),#fff,var(--naranja))}
+
+    .app-title{margin:0 0 10px;color:var(--azul-noche);font-weight:900;font-size:clamp(30px,4vw,48px);letter-spacing:-.055em;line-height:1;text-transform:uppercase}
+    .app-subtitle{margin:0 0 30px;color:var(--azul-institucional);font-weight:800;font-size:15px;line-height:1.4}
+
+    input,select,textarea{width:100%;border:1.5px solid #C5D0E3;border-radius:14px;min-height:46px;padding:11px 14px;font-family:inherit;font-size:14px;outline:none;background:#fff;color:var(--texto);transition:.18s ease}
+    input:focus,select:focus,textarea:focus{border-color:var(--azul-claro);box-shadow:0 0 0 5px rgba(65,182,255,.16)}
+    input[type=checkbox]{width:20px;min-height:20px;height:20px;padding:0;accent-color:var(--azul-noche)}
+    textarea{min-height:90px;resize:vertical}
+
+    button{border:0;min-height:54px;border-radius:16px;font-family:inherit;font-weight:900;font-size:15px;cursor:pointer;
+      transition:transform .18s ease,box-shadow .18s ease,filter .18s ease;box-shadow:0 14px 26px rgba(0,0,0,.13)}
+    button:hover{transform:translateY(-2px);box-shadow:0 18px 36px rgba(0,0,0,.18)}
+    button:disabled{opacity:.55;cursor:not-allowed;transform:none}
+    .btn-new,.btn-green{background:linear-gradient(135deg,var(--azul-claro),#7AD3FF);color:var(--azul-noche)}
+    .btn-consult,.btn-dark{background:linear-gradient(135deg,#07043B,#11106B);color:#fff}
+    .btn-admin,.btn-orange{background:linear-gradient(135deg,var(--naranja),#FFB35A);color:var(--azul-noche)}
+    .btn-red{background:linear-gradient(135deg,#D90429,#F0566F);color:#fff}
+    .btn-link{background:none;box-shadow:none;color:var(--azul-institucional);min-height:40px;font-size:13px;text-decoration:underline}
+    .btn-link:hover{box-shadow:none;transform:none}
+    .btn-small{min-height:42px;font-size:12px;padding:8px 14px;border-radius:12px}
+
+    /* INICIO */
+    .home-search{max-width:720px;margin:0 auto}
+    .home-search h3{margin:0 0 6px;color:var(--azul-noche);font-size:20px;font-weight:900}
+    .search-row{display:flex;gap:12px}
+    .search-row input{min-height:56px;font-size:15px}
+    .search-row button{min-width:190px;white-space:nowrap}
+    .divider{display:flex;align-items:center;gap:14px;margin:30px auto;max-width:720px;color:var(--gris);font-weight:800;font-size:12px;text-transform:uppercase}
+    .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--borde)}
+    .new-card{max-width:720px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px;text-align:left;
+      background:linear-gradient(135deg,#EAF7FF,#fff);border:1.5px solid #BFE6FF;border-radius:20px;padding:22px 26px}
+    .new-card b{display:block;color:var(--azul-noche);font-size:17px;margin-bottom:4px}
+    .new-card span{color:var(--gris);font-size:12px;font-weight:700;line-height:1.5}
+    .new-card button{min-width:200px}
+    .internal-link{margin-top:26px}
+
+    .view{display:none;text-align:left;margin-top:32px;border-top:1px solid var(--borde);padding-top:28px}
+    .view.active{display:block}
+    .view h2{text-align:center;color:var(--azul-noche);margin:0 0 22px;font-size:30px;font-weight:900;letter-spacing:-.045em;text-transform:uppercase}
+
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px}
+    .field{margin-bottom:8px}
+    .field.full{grid-column:1/-1}
+    label{display:block;color:var(--azul-noche);font-weight:800;font-size:13px;margin-bottom:8px}
+    .required{color:var(--rojo);font-weight:900}
+    .field-error{display:none;color:var(--rojo);font-size:11px;font-weight:800;margin-top:6px;line-height:1.35}
+    .field-error.show{display:block}
+    .input-error{border-color:var(--rojo)!important;box-shadow:0 0 0 5px rgba(217,4,41,.12)!important}
+    .input-ok{border-color:var(--azul-claro)!important}
+
+    /* WIZARD */
+    .wizard{display:flex;gap:10px;margin:0 0 26px}
+    .ws{flex:1;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:14px;background:#EEF2FF;color:var(--gris);font-weight:800;font-size:12px}
+    .ws span{width:28px;height:28px;border-radius:50%;background:#C7D2FE;color:var(--azul-noche);display:flex;align-items:center;justify-content:center;font-weight:900;flex-shrink:0}
+    .ws.active{background:var(--azul-noche);color:#fff}
+    .ws.active span{background:var(--azul-claro)}
+    .ws.done span{background:var(--verde);color:#fff}
+    .step{display:none}
+    .step.active{display:block}
+    .resumen-box{background:#F8FAFF;border:1px solid #DDE3F3;border-radius:16px;padding:16px 18px;font-size:12px;line-height:1.7;margin-bottom:14px}
+    .resumen-box b{color:var(--azul-noche)}
+
+    .document-box{grid-column:1/-1;background:linear-gradient(180deg,#F8FAFF,#fff);border:1px solid #DDE3F3;border-left:7px solid var(--azul-claro);
+      border-radius:20px;padding:22px 24px;color:var(--azul-noche);font-size:13px;line-height:1.6;margin-bottom:12px;box-shadow:var(--sombra-suave)}
+    .document-box h3{margin:0 0 10px;font-size:17px;font-weight:900;text-transform:uppercase}
+    .document-box p{margin:8px 0}
+    .document-box ol{margin:12px 0 12px 20px;padding:0}
+    .document-box li{margin-bottom:8px;font-weight:700}
+    .important-text{color:var(--rojo);font-weight:900}
+
+    .mini-actions{display:flex;justify-content:center;gap:12px;margin-top:20px;flex-wrap:wrap}
+    .mini-actions button{min-width:200px}
+    .mini-actions .btn-small{min-width:0}
+
+    /* CONSULTA */
+    .status-card{background:linear-gradient(180deg,#fff,#F8FAFF);border:1px solid var(--borde);border-radius:18px;padding:24px;margin-top:20px;box-shadow:var(--sombra-suave);text-align:left}
+    .status-title{text-align:center;font-size:22px;color:var(--azul-noche);font-weight:900;margin-bottom:6px}
+    .estado{text-align:center;font-size:20px;font-weight:900;color:var(--azul-noche);margin:14px 0 20px}
+    .stepper{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:10px 0 18px}
+    .st{text-align:center;position:relative;padding-top:4px}
+    .st::before{content:"";position:absolute;top:22px;left:-50%;right:50%;height:3px;background:#E5E7EB;z-index:0}
+    .st:first-child::before{display:none}
+    .st.ok::before,.st.now::before{background:var(--verde)}
+    .st .dot{position:relative;z-index:1;width:36px;height:36px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;background:#E5E7EB;color:var(--gris)}
+    .st.ok .dot{background:var(--verde);color:#fff}
+    .st.now .dot{background:var(--azul-claro);color:var(--azul-noche);box-shadow:0 0 0 6px rgba(65,182,255,.22)}
+    .st.warn .dot{background:var(--naranja);color:#fff}
+    .st.bad .dot{background:var(--rojo);color:#fff}
+    .st .lbl{font-size:10px;font-weight:900;color:var(--azul-noche);text-transform:uppercase;line-height:1.25}
+    .st .est{font-size:10px;font-weight:800;color:var(--gris);margin-top:3px}
+    .st .fch{font-size:10px;color:var(--gris);margin-top:2px}
+    .st.ok .est{color:var(--verde)} .st.now .est{color:var(--azul-institucional)} .st.warn .est{color:#D97706} .st.bad .est{color:var(--rojo)}
+
+    .error{color:var(--rojo);text-align:center;font-weight:800;margin-top:14px;line-height:1.45}
+    .success{color:var(--azul-noche);text-align:center;font-weight:800;line-height:1.6}
+    .small-note{color:var(--gris);font-size:12px;text-align:center;margin-top:14px;line-height:1.45}
+    .hint{color:var(--gris);font-size:11px;font-weight:700;margin:6px 0 0;line-height:1.4}
+
+    /* PANEL */
+    .panel-top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+    .panel-top h2{margin:0!important;text-align:left!important;font-size:26px!important}
+    .who{color:var(--gris);font-size:12px;font-weight:700}
+    .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+    .metrics.m3{grid-template-columns:repeat(3,1fr)}
+    .metrics.m6{grid-template-columns:repeat(6,1fr)}
+    .metric{background:#fff;border:1px solid var(--borde);border-radius:16px;padding:14px;text-align:center;box-shadow:var(--sombra-suave)}
+    .metric strong{display:block;color:var(--azul-noche);font-size:22px;font-weight:900;margin-bottom:4px}
+    .metric.money-m strong{font-size:16px}
+    .metric.destacado{border-color:var(--azul-claro);background:linear-gradient(180deg,#F2FAFF,#fff)}
+    .metric span{color:var(--gris);font-size:10px;font-weight:800;text-transform:uppercase}
+
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 12px;border-bottom:2px solid var(--borde)}
+    .tab{background:none;box-shadow:none;border-radius:12px 12px 0 0;min-height:44px;padding:8px 16px;color:var(--gris);font-size:13px}
+    .tab:hover{transform:none;box-shadow:none;color:var(--azul-noche)}
+    .tab.active{background:var(--azul-noche);color:#fff}
+    .tab .n{display:inline-block;background:rgba(65,182,255,.25);border-radius:999px;padding:2px 8px;margin-left:6px;font-size:11px}
+    .tab.active .n{background:rgba(255,255,255,.25)}
+
+    .toolbar{display:grid;grid-template-columns:2fr 1fr auto;gap:10px;margin-bottom:10px;align-items:center}
+    .area-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:10px;margin-bottom:14px}
+    .area-card{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:12px;border-radius:12px;background:#fff;color:var(--azul-noche);border:2px solid #E1E7F3;box-shadow:none;min-height:0;font-weight:400}
+    .area-card:hover{transform:none;border-color:var(--naranja);box-shadow:none;background:#fff}
+    .area-card.active{border-color:var(--naranja);background:#FFF6EE}
+    .area-card .ac-n{font-size:26px;font-weight:800;line-height:1}.area-card .ac-t{font-size:12px;font-weight:700}.area-card .ac-s{font-size:11px;color:#667085}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+    .chip{min-height:34px;padding:6px 14px;font-size:11px;border-radius:999px;background:#EEF2FF;color:var(--azul-noche);box-shadow:none}
+    .chip:hover{transform:none;box-shadow:none;background:#E0E7FF}
+    .chip.active{background:var(--naranja)}
+
+    .batch{position:sticky;top:8px;z-index:20;background:#fff;border:2px solid var(--azul-claro);border-radius:16px;padding:14px;margin-bottom:12px;box-shadow:var(--sombra-suave)}
+    .batch .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .batch textarea{min-height:48px;flex:1;min-width:220px}
+
+    .item{background:linear-gradient(180deg,#fff,#F8FAFF);border:1px solid var(--borde);border-radius:16px;margin-bottom:10px;box-shadow:0 8px 22px rgba(15,23,42,.07)}
+    .item-head{display:grid;grid-template-columns:auto 1.3fr 1.6fr 1fr auto;gap:12px;align-items:center;padding:12px 16px;cursor:pointer}
+    .item-head .rad{font-weight:900;color:var(--azul-noche);font-size:14px}
+    .item-head .sub{color:var(--gris);font-size:11px;font-weight:700}
+    .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(65,182,255,.16);color:var(--azul-noche);font-size:10px;font-weight:900;text-transform:uppercase;text-align:center}
+    .badge.ok{background:rgba(46,164,79,.16)} .badge.bad{background:rgba(217,4,41,.13)} .badge.warn{background:rgba(255,152,36,.22)} .badge.off{background:#EEF2F6;color:var(--gris)}
+    .item-body{display:none;border-top:1px solid var(--borde);padding:16px}
+    .item.open .item-body{display:block}
+    .grid2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px 18px;font-size:12px;line-height:1.45}
+    .grid2 .full{grid-column:1/-1}
+    .alert-box{background:#fff;border:1px solid #F3D9B8;border-left:6px solid #FF9824;border-radius:14px;padding:12px 14px;margin:0 0 14px}
+    .plazo-area{margin:10px 0}.plazo-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+    .alert-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+    .alert-head h4{margin:0;font-size:15px}
+    .alert-umbral{font-size:12px;font-weight:700}
+    .alert-umbral input{width:60px;padding:4px 6px;border-radius:8px;border:1px solid #C5D0E3}
+    .alert-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+    .chip{background:#EEF1FA;border-radius:999px;padding:3px 10px;font-size:11px;font-weight:700}
+    .chip-red{background:#FDE4E7;color:#B42318}.chip-orange{background:#FFF1DC;color:#9A5B00}.chip-ok{background:#E3F6EA;color:#157347}
+    .tag-icx{background:#FF9824;color:#07043B;border-radius:8px;padding:1px 7px;font-size:10px;font-weight:800;margin-left:4px}
+    .per-banner{border-radius:14px;padding:12px 14px;margin:0 0 14px;font-size:13px}
+    .per-ok{background:#EAF8EF;border-left:6px solid #1F9D55}.per-warn{background:#FFF1DC;border-left:6px solid #FF9824}.per-bad{background:#FDECEF;border-left:6px solid #D90429}
+    .per-row{border:1px solid #E1E7F3;border-radius:12px;padding:10px 12px;margin:8px 0;background:#fff}
+    .per-row .grid-per{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;align-items:end;margin-top:8px}
+    .ec-box{background:#F4F8FF;border:1px solid #CFE0FA;border-radius:14px;padding:12px 14px;margin-top:12px}
+    .ec-box h4{margin:0 0 6px;font-size:14px;color:var(--navy,#07043B)}
+    .ec-form{margin-top:8px}
+    .com-item{background:#fff;border:1px solid #E1E7F3;border-radius:10px;padding:8px 12px;margin:6px 0;font-size:12px}
+    .com-rol{background:#07043B;color:#fff;border-radius:8px;padding:1px 7px;font-size:10px;margin-left:4px}
+    .obs-box{background:#FFF7E8;border-left:5px solid var(--naranja);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:12px}
+    .links{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+    .acciones{border-top:1px dashed var(--borde);margin-top:12px;padding-top:12px}
+    .ap-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:10px}
+    .ap-grid.v4{grid-template-columns:repeat(4,1fr)}
+    details.editar,details.formato{margin-top:14px;border:1px solid var(--borde);border-radius:14px;padding:12px 14px;background:#fff}
+    details summary{cursor:pointer;font-weight:900;color:var(--azul-noche);font-size:13px}
+    .edit-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px 14px;margin-top:12px}
+    .edit-grid .full{grid-column:1/-1}
+    .tbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+    .tbl th{background:#07043B;color:#fff;padding:8px;text-align:left}
+    .tbl td{border-bottom:1px solid var(--borde);padding:8px;vertical-align:top}
+    .empty-panel{text-align:center;padding:28px;color:var(--gris);font-weight:800}
+
+    /* FORMATO F AF 041 */
+    .fmt{margin-top:12px;border:1.5px solid #C5D0E3;border-radius:14px;overflow:hidden;font-size:12px}
+    .fmt-head{display:grid;grid-template-columns:1fr auto;gap:10px;background:#F4F5FF;padding:12px 16px;border-bottom:1.5px solid #C5D0E3}
+    .fmt-head b{font-size:15px;color:var(--azul-noche);text-transform:uppercase}
+    .fmt-head small{color:var(--gris);font-weight:700;text-align:right;line-height:1.5}
+    .fmt-sec{border-bottom:1px solid #C5D0E3}
+    .fmt-sec:last-child{border-bottom:0}
+    .fmt-sec.pendiente{opacity:.55}
+    .fmt-title{display:flex;justify-content:space-between;align-items:center;background:var(--azul-noche);color:#fff;padding:8px 14px;font-weight:900;font-size:11px;text-transform:uppercase}
+    .fmt-title .pill{font-size:9px;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.2)}
+    .fmt-title .pill.completo{background:var(--verde)} .fmt-title .pill.curso{background:var(--azul-claro);color:var(--azul-noche)} .fmt-title .pill.devuelto{background:var(--rojo)}
+    .fmt-row{display:grid;grid-template-columns:1fr 1.4fr;border-top:1px solid #EEF2F6}
+    .fmt-row>div{padding:7px 14px}
+    .fmt-row>div:first-child{background:#F8FAFF;font-weight:800;color:var(--azul-noche)}
+    .fmt-row .vacio{color:#A0A8B8}
+    .fmt-sub{background:#EEF2FF;padding:6px 14px;font-weight:900;font-size:11px;color:var(--azul-institucional);text-transform:uppercase}
+
+    /* DASHBOARD */
+    .dash-filters{display:grid;grid-template-columns:repeat(5,1fr) auto;gap:10px;align-items:end;background:#F8FAFF;border:1px solid var(--borde);border-radius:16px;padding:14px;margin-bottom:14px}
+    .dash-filters label{margin-bottom:4px;font-size:11px}
+    .charts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}
+    .chart-card{background:#fff;border:1px solid var(--borde);border-radius:16px;padding:14px;box-shadow:var(--sombra-suave)}
+    .chart-card h4{margin:0 0 8px;color:var(--azul-noche);font-size:13px;font-weight:900;text-transform:uppercase}
+    .chart-card .box{position:relative;height:260px}
+    .chart-card.full{grid-column:1/-1}
+
+    #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:999;max-width:90vw;display:none}
+    #toast div{padding:14px 20px;border-radius:14px;font-weight:800;font-size:13px;color:#fff;box-shadow:0 18px 40px rgba(0,0,0,.3);background:#07043B}
+    #toast .err{background:var(--rojo)} #toast .ok{background:var(--verde)}
+
+    @media(max-width:920px){.header-title-block{padding-left:100px}.logo-20{width:min(280px,34vw)}.item-head{grid-template-columns:auto 1fr auto}.item-head .col-prog,.item-head .col-dias{display:none}.metrics.m6{grid-template-columns:repeat(3,1fr)}.dash-filters{grid-template-columns:1fr 1fr}.charts{grid-template-columns:1fr}}
+    @media(max-width:820px){
+      .header-content{grid-template-columns:1fr;text-align:center;justify-items:center;gap:14px}
+      .header-title-block{padding-left:0}.header-anniversary{justify-content:center}.logo-20{width:min(250px,66vw)}
+      .top-header{min-height:auto}.header-overlay{padding:18px 14px}.header-title{font-size:28px}.header-subtitle{font-size:12px;letter-spacing:.12em}
+      .page{min-height:auto;padding:22px 14px}.app{padding:34px 22px;border-radius:22px}
+      .form-grid,.grid2,.edit-grid,.ap-grid,.ap-grid.v4,.toolbar{grid-template-columns:1fr;gap:13px}
+      .metrics,.metrics.m3,.metrics.m6{grid-template-columns:1fr 1fr}
+      .mini-actions button{width:100%}
+      .search-row{flex-direction:column}.new-card{flex-direction:column;text-align:center}
+      .stepper{grid-template-columns:1fr;gap:14px}.st{display:grid;grid-template-columns:44px 1fr;text-align:left;align-items:center;padding:0}.st::before{display:none}.st .dot{margin:0}
+      .wizard{flex-direction:column}.fmt-row{grid-template-columns:1fr}
+    }
+    /* ----- Celular ----- */
+    @media(max-width:820px){
+      .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;margin-left:-4px;margin-right:-4px;padding-bottom:0}
+      .tab{flex:0 0 auto;white-space:nowrap;padding:8px 13px;font-size:12px}
+      .tbl{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+      .item-head{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:12px 14px}
+      .item-head>div:first-child:empty{display:none}
+      .item-head>div:nth-child(2){flex:1 1 150px;min-width:0}
+      .item-head .col-prog{display:block!important;flex:1 1 100%;order:3}
+      .item-head>div:nth-child(4){order:4}
+      .item-head .col-dias{display:block!important;order:5;margin-left:auto}
+      .item-head .rad{word-break:break-word}
+      .batch{position:static}
+      .batch .row button{width:100%}
+      .batch textarea{min-width:0;width:100%}
+      .dash-filters{grid-template-columns:1fr 1fr}
+      .area-cards{grid-template-columns:1fr 1fr}
+      .chips .chip{min-height:38px}
+    }
+    @media(max-width:520px){
+      .page{padding:12px 6px}.app{padding:22px 14px;border-radius:18px}
+      .header-title{font-size:24px}.header-overlay{padding:14px 10px}
+      .logo-20{width:min(220px,62vw)}
+      .app-title{font-size:26px!important}
+      .panel-top h2{font-size:21px!important}
+      .metrics,.metrics.m3,.metrics.m6{grid-template-columns:1fr 1fr;gap:8px}
+      .metric{padding:10px 6px}.metric strong{font-size:19px}.metric.money-m strong{font-size:14px}
+      .dash-filters{grid-template-columns:1fr}.g-filters{grid-template-columns:1fr 1fr}.g-filters button{grid-column:1/-1}
+      .item-head{padding:10px 12px}
+      .item-body{padding:12px!important}
+      .status-card{padding:16px}
+      .mini-actions{gap:8px}.mini-actions button{min-width:0;width:100%}
+      input,select,textarea{font-size:16px!important} /* evita el zoom automático en iPhone */
+      .acciones .mini-actions button,.ec-form button{width:100%}
+      #toast{max-width:94vw;bottom:14px}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-layer"></div>
+
+  <header class="top-header">
+    <div class="header-overlay">
+      <div class="header-content">
+        <div class="header-title-block">
+          <h1 class="header-title">Módulo de Devoluciones</h1>
+          <p class="header-subtitle">Sede Barranquilla</p>
+        </div>
+        <div class="header-anniversary">
+          <img class="logo-20" src="https://drive.google.com/thumbnail?id=1dA-8N_g4S0L-rVkKuKSkW5oCG_GZWPaV&sz=w1600" alt="Logo Americana 20 años">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="page">
+    <main class="app" id="app">
+
+      <h1 class="app-title" id="appTitulo">Gestión de Solicitudes</h1>
+      <p class="app-subtitle" id="appSubtitulo">Consulte el estado de su trámite o radique una nueva solicitud</p>
+
+      <!-- INICIO -->
+      <div id="inicio">
+        <div class="home-search">
+          <h3>¿Ya radicó su solicitud?</h3>
+          <p class="hint" style="margin:0 0 12px">Escriba su <b>número de radicado</b> (ej. DEV-2026-0001) <b>o</b> su <b>número de documento</b>. No necesita ambos.</p>
+          <div class="search-row">
+            <input id="busqueda" placeholder="Radicado o número de documento" autocomplete="off">
+            <button type="button" class="btn-consult" id="btnConsultar" onclick="consultarEstado()">Consultar estado</button>
+          </div>
+        </div>
+
+        <div id="consultaResultado"></div>
+
+        <div class="divider">¿Aún no tiene una solicitud?</div>
+
+        <div class="new-card">
+          <div><b>Nueva solicitud de devolución</b><span>Le tomará unos minutos: 3 pasos sencillos y un único PDF con sus soportes.</span></div>
+          <button type="button" class="btn-new" onclick="mostrarVista('nuevaSolicitud')">Iniciar solicitud</button>
+        </div>
+
+        <div class="internal-link"><button type="button" class="btn-link" onclick="mostrarVista('loginInterno')">Acceso interno (personal de la institución)</button></div>
+      </div>
+
+      <!-- NUEVA SOLICITUD -->
+      <section id="nuevaSolicitud" class="view">
+        <h2>Nueva solicitud</h2>
+
+        <div class="wizard">
+          <div class="ws active" id="ws1"><span>1</span>Sus datos</div>
+          <div class="ws" id="ws2"><span>2</span>Programa y motivo</div>
+          <div class="ws" id="ws3"><span>3</span>Soportes y envío</div>
+        </div>
+
+        <div class="step active" id="paso1">
+          <div class="document-box">
+            <h3>Documentos requeridos</h3>
+            <p class="important-text">Se reciben para estudio, NO implica aceptación.</p>
+            <ol>
+              <li>Una carta firmada a mano donde explique detalladamente los motivos de la devolución.</li>
+              <li>Fotocopia legible de su documento de identidad.</li>
+              <li>Certificación bancaria a nombre del estudiante que solicita la devolución. NO mayor a 60 días.</li>
+              <li>Comprobante del pago realizado que respalde la información proporcionada.</li>
+              <li>Evidencia, historia clínica o soportes a los que haya lugar en donde se pueda evidenciar lo mencionado en la carta. SI APLICA.</li>
+            </ol>
+            <p>Una vez nos relacione todos los documentos, el proceso de validación de la carta se extiende de <b>20 a 30 días hábiles</b>, excluyendo sábados, domingos y días festivos. Agradecemos su comprensión y paciencia.</p>
+          </div>
+          <div class="form-grid">
+            <div class="field full"><label>Nombre completo <span class="required">*</span></label>
+              <input id="nombreEstudiante" placeholder="Digite nombre completo"><small class="field-error" id="errorNombre"></small></div>
+            <div class="field"><label>Documento <span class="required">*</span></label>
+              <input id="documentoEstudiante" inputmode="numeric" placeholder="Solo números, sin puntos ni comas"><small class="field-error" id="errorDocumento"></small></div>
+            <div class="field"><label>Celular <span class="required">*</span></label>
+              <input id="celularEstudiante" inputmode="numeric" placeholder="10 dígitos, sin espacios"><small class="field-error" id="errorCelular"></small></div>
+            <div class="field full"><label>Correo <span class="required">*</span></label>
+              <input id="correoEstudiante" type="email" placeholder="correo@ejemplo.com"><small class="field-error" id="errorCorreo"></small></div>
+          </div>
+        </div>
+
+        <div class="step" id="paso2">
+          <div class="form-grid">
+            <div class="field"><label>Nivel <span class="required">*</span></label>
+              <select id="nivel" onchange="actualizarProgramas()"><option value="">Seleccione...</option><option>Pregrado</option><option>Posgrado</option></select>
+              <small class="field-error" id="errorNivel"></small></div>
+            <div class="field"><label>Modalidad <span class="required">*</span></label>
+              <select id="modalidad" onchange="actualizarProgramas()"><option value="">Seleccione...</option><option>Presencial</option><option>Virtual</option><option>A distancia</option></select>
+              <small class="field-error" id="errorModalidad"></small></div>
+            <div class="field full"><label>Programa <span class="required">*</span></label>
+              <select id="programa"><option value="">Cargando programas...</option></select><small class="field-error" id="errorPrograma"></small></div>
+            <div class="field"><label>Periodo <span class="required">*</span></label>
+              <input id="periodo" placeholder="Ej: 2026-1 (también 20261, 2026.1 o 2026 1)" onblur="this.value=normPeriodo(this.value)||this.value"><small class="field-error" id="errorPeriodo"></small></div>
+            <div class="field"><label>Motivo <span class="required">*</span></label>
+              <select id="motivo"><option value="">Seleccione...</option>
+                <option>Incapacidad médica</option><option>Licencia de maternidad</option><option>Traslado laboral</option>
+                <option>Servicio militar</option><option>Fallecimiento del estudiante</option><option>No apertura del programa</option>
+                <option>Congelación de matrícula</option><option>Otro</option></select>
+              <small class="field-error" id="errorMotivo"></small></div>
+            <div class="field full"><label>Descripción de la solicitud <span class="required">*</span></label>
+              <textarea id="descripcion" placeholder="Explique de manera clara el motivo de su solicitud (mínimo 20 caracteres)"></textarea><small class="field-error" id="errorDescripcion"></small></div>
+          </div>
+        </div>
+
+        <div class="step" id="paso3">
+          <div class="resumen-box" id="resumenSolicitud"></div>
+          <div class="field"><label>PDF único de soportes <span class="required">*</span></label>
+            <input type="file" id="archivoPdf" accept="application/pdf,.pdf"><small class="field-error" id="errorArchivo"></small>
+            <p class="small-note" style="text-align:left">Un solo PDF con todos los documentos relacionados (máximo 90 MB).</p></div>
+        </div>
+
+        <div class="mini-actions">
+          <button type="button" class="btn-dark" id="btnAtras" onclick="anteriorPaso()">Atrás</button>
+          <button type="button" class="btn-green" id="btnSiguiente" onclick="siguientePaso()">Siguiente</button>
+          <button type="button" class="btn-orange" id="btnEnviar" style="display:none" onclick="enviarSolicitud()">Enviar solicitud</button>
+        </div>
+        <div style="text-align:center"><button type="button" class="btn-link" onclick="volverInicio()">Cancelar y volver al inicio</button></div>
+        <div id="solicitudMensaje"></div>
+      </section>
+
+      <!-- LOGIN -->
+      <section id="loginInterno" class="view">
+        <h2>Acceso interno</h2>
+        <div class="form-grid">
+          <div class="field"><label>Correo institucional</label><input id="loginCorreo" type="email" placeholder="correo@americana.edu.co"></div>
+          <div class="field"><label>Perfil</label>
+            <select id="loginRol">
+              <option value="">Seleccione su perfil...</option>
+              <option value="ADMIN">Administrador / Financiamiento</option>
+              <option value="ICETEX">Devoluciones ICETEX</option>
+              <option value="JEFATURA">Jefatura de Financiamiento</option>
+              <option value="CARTERA">Cartera</option>
+              <option value="CONTROL_INTERNO">Control Interno</option>
+              <option value="TESORERIA">Tesorería</option>
+            </select></div>
+          <div class="field full"><label>Clave de acceso</label><input id="loginClave" type="password" placeholder="Digite su clave"></div>
+        </div>
+        <div class="mini-actions">
+          <button type="button" class="btn-green" id="btnLogin" onclick="ingresarInterno()">Ingresar</button>
+          <button type="button" class="btn-dark" onclick="volverInicio()">Volver</button>
+        </div>
+        <p class="hint" style="display:block">¿Olvidó su clave? Solicítela al administrador de Financiamiento (devoluciones@americana.edu.co); una vez ingrese podrá cambiarla por una de su preferencia.</p>
+        <div id="loginMensaje"></div>
+      </section>
+
+      <!-- PANEL -->
+      <section id="panelInterno" class="view">
+        <div id="panelContenido"></div>
+      </section>
+
+    </main>
+  </section>
+
+  <div id="toast"></div>
+
+<script>
+  /* ============ ESTADO ============ */
+  var S = { areaSel:"TODAS", areaVista:"LOTE", token:null, usuario:null, datos:[], resumen:null, lotes:[], tab:"PENDIENTE", busqueda:"", estado:"", sub:"TODAS", sel:{}, limite:50, ocupado:false, f:{desde:"",hasta:"",estado:"",nivel:"",tipo:""}, g:{lote:"",pr:"",periodo:""} };
+  var archivoBase64 = null, programas = {}, enviandoPublico = false, paso = 1;
+  var consultaCtx = { criterio:"", documento:"" };
+  var archivosSubsana = {}, archivoReemplazo = {}, CH = {};
+
+  var ESTADOS = ["RECIBIDA","EN REVISIÓN FINANCIAMIENTO","PENDIENTE SUBSANACIÓN","RECHAZADA POR FINANCIAMIENTO","APROBADA FINANCIAMIENTO","ENVIADA A JEFATURA","DEVUELTA POR JEFATURA","ENVIADA A CARTERA","DEVUELTA POR CARTERA","ENVIADA A CONTROL INTERNO","DEVUELTA POR CONTROL INTERNO","ENVIADA A TESORERÍA","DEVUELTA POR TESORERÍA","PAGO PROGRAMADO","PAGO REALIZADO","FINALIZADA"];
+  var ETAPAS = ["FINANCIAMIENTO","JEFATURA FINANCIAMIENTO","CARTERA","CONTROL INTERNO","TESORERÍA","FINALIZADO"];
+  var ESTADO_ENTRADA = { JEFATURA:"ENVIADA A JEFATURA", CARTERA:"ENVIADA A CARTERA", CONTROL_INTERNO:"ENVIADA A CONTROL INTERNO" };
+  var VERIF = ["PENDIENTE VALIDAR","OK","NO"];
+  var PALETA = ["#07043B","#41B6FF","#FF9824","#2EA44F","#D90429","#00579D","#7C5CFF","#14B8A6","#F59E0B","#EC4899","#64748B","#94A3B8"];
+
+  var EDIT_FIELDS = [
+    ["Nombre estudiante","text"],["Documento estudiante","text"],["Correo estudiante","text"],["Celular estudiante","text"],
+    ["Nivel",["Pregrado","Posgrado"]],["Modalidad",["Presencial","Virtual","A distancia"]],["Periodo","text"],
+    ["Programa","text","full"],["Motivo solicitud","text"],["Devolver a",["","ESTUDIANTE","ACUDIENTE","TERCERO AUTORIZADO","ICETEX"]],
+    ["Valor solicitado","number"],["Porcentaje devolución","text"],["Valor aprobado","number"],["Artículo aplicado","text","full"],
+    ["Carta solicitud incluida",VERIF],["Documento identidad incluido",VERIF],["Soporte pago incluido",VERIF],["Certificación bancaria incluida",VERIF],
+    ["Estado actual",ESTADOS],["Etapa actual",ETAPAS],
+    ["Descripción solicitud","area","full"],["Observación Financiamiento","area","full"],["Observación pública","area","full"]
+  ];
+
+  /* ============ UTILIDADES ============ */
+  function $(id){ return document.getElementById(id); }
+  // Acepta 2026-1, 20261, 2026.1, 2026 1, 2026/1, 2026-I... y devuelve "2026-1" ("" si no es válido).
+  function normPeriodo(t){
+    var m=/^(\d{4})\s*[-.\/_\s]?\s*(0?1|0?2|II|I)$/i.exec(String(t||"").trim());
+    if(!m) return "";
+    var s=m[2].toUpperCase();
+    return m[1]+"-"+(s==="II"?"2":s==="I"?"1":s.replace("0",""));
+  }
+  function val(id){ var el=$(id); return el ? String(el.value).trim() : ""; }
+  function esc(t){ if(t===null||t===undefined) return ""; return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
+  function norm(t){ return String(t||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").trim(); }
+  function up(t){ return String(t||"").trim().toUpperCase(); }
+  function num(v){ var n=Number(String(v||"").replace(/[^0-9.-]/g,"")); return isNaN(n)?0:n; }
+  function money(n){ return new Intl.NumberFormat("es-CO",{style:"currency",currency:"COP",maximumFractionDigits:0}).format(n||0); }
+  function validarCorreoCliente(c){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(c||"").trim()); }
+  function uniq(a){ var o={}; a.forEach(function(x){ if(x) o[x]=1; }); return Object.keys(o); }
+  function esFinalS(s){ var e=up(s["Estado actual"]); return e==="FINALIZADA"||e==="PAGO REALIZADO"||e.indexOf("RECHAZADA")===0; }
+  function fechaDe(s){ var m=/^(\d{2})\/(\d{2})\/(\d{4})/.exec(s["Fecha solicitud"]||""); return m?new Date(+m[3],+m[2]-1,+m[1]):null; }
+
+  function toast(msg,tipo){
+    var t=$("toast");
+    t.innerHTML='<div class="'+(tipo||"")+'">'+esc(msg)+'</div>';
+    t.style.display="block";
+    clearTimeout(toast._t);
+    toast._t=setTimeout(function(){ t.style.display="none"; }, 5200);
+  }
+
+  function run(fn,args,ok,fail){
+    var r=google.script.run.withSuccessHandler(ok).withFailureHandler(function(err){
+      var m=err&&err.message?err.message:String(err);
+      if(fail) fail(m); else toast(m,"err");
+    });
+    r[fn].apply(r,args);
+  }
+
+  function leerPdf(input,errId,cb){
+    var file=input.files[0];
+    if(errId) limpiarErrorCampo(input.id,errId);
+    if(!file){ cb(null); return; }
+    if(!file.name.toLowerCase().endsWith(".pdf")){ if(errId) marcarError(input.id,errId,"El archivo debe estar en formato PDF."); else toast("El archivo debe ser PDF.","err"); input.value=""; cb(null); return; }
+    if(file.size>90*1024*1024){ if(errId) marcarError(input.id,errId,"El archivo no debe superar 90 MB."); else toast("El PDF no debe superar 90 MB.","err"); input.value=""; cb(null); return; }
+    if(file.size>8*1024*1024) toast("Leyendo el archivo ("+(file.size/1048576).toFixed(1)+" MB)... puede tardar unos segundos.");
+    var rd=new FileReader();
+    rd.onload=function(){ if(file.size>8*1024*1024) $("toast").style.display="none"; cb({nombre:file.name,base64:rd.result,mimeType:"application/pdf",tamanio:file.size}); input.classList.add("input-ok"); };
+    rd.onerror=function(){ toast("No se pudo leer el archivo. Intente de nuevo.","err"); input.value=""; cb(null); };
+    rd.readAsDataURL(file);
+  }
+
+  function descargarBase64(nombre,b64,mime){
+    var bin=atob(b64), bytes=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+    var url=URL.createObjectURL(new Blob([bytes],{type:mime||"application/octet-stream"}));
+    var a=document.createElement("a"); a.href=url; a.download=nombre; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); },4000);
+  }
+
+  /* ============ NAVEGACIÓN ============ */
+  function mostrarVista(id){
+    document.querySelectorAll(".view").forEach(function(v){ v.classList.remove("active"); });
+    $("inicio").style.display = "none";
+    $(id).classList.add("active");
+    $("app").classList.toggle("ancho", id==="panelInterno");
+    $("appTitulo").style.display = id==="panelInterno" ? "none" : "";
+    $("appSubtitulo").style.display = id==="panelInterno" ? "none" : "";
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  function volverInicio(){
+    document.querySelectorAll(".view").forEach(function(v){ v.classList.remove("active"); });
+    $("inicio").style.display = "";
+    $("app").classList.remove("ancho");
+    $("appTitulo").style.display=""; $("appSubtitulo").style.display="";
+    $("solicitudMensaje").innerHTML=""; $("loginMensaje").innerHTML="";
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  /* ============ NUEVA SOLICITUD (3 PASOS) ============ */
+  var VAL = {
+    nombreEstudiante:function(v){ return v.length<5?"Digite el nombre completo del estudiante.":""; },
+    documentoEstudiante:function(v){ if(!v) return "Digite el número de documento."; if(!/^[0-9]+$/.test(v)) return "El documento debe tener solo números."; if(v.length<6) return "El documento debe tener mínimo 6 dígitos."; return ""; },
+    celularEstudiante:function(v){ if(!v) return "Digite el número de celular."; if(!/^[0-9]{10}$/.test(v)) return "El celular debe tener 10 dígitos."; return ""; },
+    correoEstudiante:function(v){ if(!v) return "Digite el correo electrónico."; if(!validarCorreoCliente(v)) return "Digite un correo válido. Ejemplo: nombre@correo.com"; return ""; },
+    nivel:function(v){ return v?"":"Seleccione el nivel."; },
+    modalidad:function(v){ return v?"":"Seleccione la modalidad."; },
+    programa:function(v){ return v?"":"Seleccione el programa."; },
+    periodo:function(v){ if(!v) return "Digite el periodo."; if(!normPeriodo(v)) return "Periodo no válido. Ejemplos: 2026-1, 20261, 2026.1 o 2026 1."; return ""; },
+    motivo:function(v){ return v?"":"Seleccione el motivo."; },
+    descripcion:function(v){ if(!v) return "Digite la descripción de la solicitud."; if(v.length<20) return "La descripción debe tener mínimo 20 caracteres."; return ""; }
+  };
+  var ERR_ID = { nombreEstudiante:"errorNombre", documentoEstudiante:"errorDocumento", celularEstudiante:"errorCelular", correoEstudiante:"errorCorreo", nivel:"errorNivel", modalidad:"errorModalidad", programa:"errorPrograma", periodo:"errorPeriodo", motivo:"errorMotivo", descripcion:"errorDescripcion" };
+  var PASOS = { 1:["nombreEstudiante","documentoEstudiante","celularEstudiante","correoEstudiante"], 2:["nivel","modalidad","programa","periodo","motivo","descripcion"], 3:[] };
+
+  document.addEventListener("DOMContentLoaded", function(){
+    cargarProgramas();
+    activarValidacionEnTiempoReal();
+    $("archivoPdf").addEventListener("change", function(){ var self=this; leerPdf(self,"errorArchivo",function(a){ archivoBase64=a; }); });
+    $("loginClave").addEventListener("keydown", function(e){ if(e.key==="Enter") ingresarInterno(); });
+    $("busqueda").addEventListener("keydown", function(e){ if(e.key==="Enter") consultarEstado(); });
+    irPaso(1);
+  });
+
+  function validarPaso(n){
+    var ok=true;
+    PASOS[n].forEach(function(id){ var m=VAL[id](val(id)); if(m){ marcarError(id,ERR_ID[id],m); ok=false; } });
+    if(n===3&&!archivoBase64){ marcarError("archivoPdf","errorArchivo","Debe adjuntar un PDF."); ok=false; }
+    return ok;
+  }
+
+  function irPaso(n){
+    paso=n;
+    [1,2,3].forEach(function(i){
+      $("paso"+i).classList.toggle("active",i===n);
+      var w=$("ws"+i); w.classList.toggle("active",i===n); w.classList.toggle("done",i<n);
+    });
+    $("btnAtras").style.display = n>1 ? "" : "none";
+    $("btnSiguiente").style.display = n<3 ? "" : "none";
+    $("btnEnviar").style.display = n===3 ? "" : "none";
+    if(n===3) renderResumenSolicitud();
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  function siguientePaso(){ if(validarPaso(paso)) irPaso(paso+1); }
+  function anteriorPaso(){ if(paso>1) irPaso(paso-1); }
+
+  function renderResumenSolicitud(){
+    $("resumenSolicitud").innerHTML=
+      '<b>Revise sus datos antes de enviar</b><br>'+
+      '<b>Estudiante:</b> '+esc(val("nombreEstudiante"))+' · <b>Documento:</b> '+esc(val("documentoEstudiante"))+'<br>'+
+      '<b>Correo:</b> '+esc(val("correoEstudiante"))+' · <b>Celular:</b> '+esc(val("celularEstudiante"))+'<br>'+
+      '<b>Programa:</b> '+esc(val("programa"))+' ('+esc(val("nivel"))+' · '+esc(val("modalidad"))+') · <b>Periodo:</b> '+esc(normPeriodo(val("periodo"))||val("periodo"))+'<br>'+
+      '<b>Motivo:</b> '+esc(val("motivo"));
+  }
+
+  function cargarProgramas(){
+    var p=$("programa");
+    run("obtenerProgramasDisponibles",[],function(res){
+      programas=res||{}; p.innerHTML='<option value="">Seleccione primero nivel y modalidad...</option>';
+    },function(){ programas={}; p.innerHTML='<option value="">No se pudieron cargar los programas</option>'; });
+  }
+
+  function actualizarProgramas(){
+    var nivel=val("nivel"), modalidad=val("modalidad"), p=$("programa");
+    limpiarErrorCampo("nivel","errorNivel"); limpiarErrorCampo("modalidad","errorModalidad"); limpiarErrorCampo("programa","errorPrograma");
+    if(!nivel||!modalidad){ p.innerHTML='<option value="">Seleccione primero nivel y modalidad...</option>'; return; }
+    var lista=programas[nivel+"|"+modalidad]||[];
+    if(!lista.length){ p.innerHTML='<option value="">No hay programas disponibles para esta modalidad</option>'; return; }
+    p.innerHTML='<option value="">Seleccione...</option>'+lista.map(function(x){ return '<option>'+esc(x)+'</option>'; }).join("");
+  }
+
+  function enviarSolicitud(){
+    if(enviandoPublico) return;
+    limpiarErroresFormulario();
+    for(var n=1;n<=3;n++){ if(!validarPaso(n)){ irPaso(n); $("solicitudMensaje").innerHTML='<div class="error">Revise los campos marcados.</div>'; return; } }
+
+    var payload={
+      nombreEstudiante:val("nombreEstudiante"), documentoEstudiante:val("documentoEstudiante"), correoEstudiante:val("correoEstudiante"),
+      celularEstudiante:val("celularEstudiante"), nivel:val("nivel"), modalidad:val("modalidad"), programa:val("programa"),
+      periodo:normPeriodo(val("periodo")), motivo:val("motivo"), descripcion:val("descripcion"), archivo:archivoBase64
+    };
+
+    enviandoPublico=true; $("btnEnviar").disabled=true;
+    $("solicitudMensaje").innerHTML='<div class="status-card">Enviando solicitud... por favor no cierre esta ventana.</div>';
+
+    run("guardarSolicitudFormulario",[payload],function(res){
+      enviandoPublico=false; $("btnEnviar").disabled=false;
+      if(!res||!res.success){ $("solicitudMensaje").innerHTML='<div class="error">'+esc((res&&res.error)||"No se pudo registrar la solicitud.")+'</div>'; return; }
+      $("solicitudMensaje").innerHTML='<div class="status-card success"><b>¡Solicitud registrada correctamente!</b><br>Su radicado es: <b style="font-size:22px">'+esc(res.radicado)+'</b><br>Guárdelo: con este número —o con su documento— podrá consultar el estado.<br>Le enviamos una copia a su correo.</div>';
+      limpiarFormularioSolicitud();
+      $("btnEnviar").style.display="none"; $("btnAtras").style.display="none";
+    },function(m){
+      enviandoPublico=false; $("btnEnviar").disabled=false;
+      $("solicitudMensaje").innerHTML='<div class="error">'+esc(m)+'</div>';
+    });
+  }
+
+  function marcarError(inputId,errorId,msg){
+    var i=$(inputId), e=$(errorId);
+    if(i){ i.classList.add("input-error"); i.classList.remove("input-ok"); }
+    if(e){ e.textContent=msg; e.classList.add("show"); }
+  }
+  function limpiarErrorCampo(inputId,errorId){
+    var i=$(inputId), e=$(errorId);
+    if(i) i.classList.remove("input-error");
+    if(e){ e.textContent=""; e.classList.remove("show"); }
+  }
+  function limpiarErroresFormulario(){
+    document.querySelectorAll("#nuevaSolicitud .field-error").forEach(function(e){ e.textContent=""; e.classList.remove("show"); });
+    document.querySelectorAll("#nuevaSolicitud input,#nuevaSolicitud select,#nuevaSolicitud textarea").forEach(function(i){ i.classList.remove("input-error","input-ok"); });
+  }
+
+  function activarValidacionEnTiempoReal(){
+    ["documentoEstudiante","celularEstudiante"].forEach(function(id){
+      var c=$(id);
+      c.addEventListener("input",function(){ this.value=this.value.replace(/\D/g,""); });
+      c.addEventListener("paste",function(e){ e.preventDefault(); this.value=((e.clipboardData||window.clipboardData).getData("text")).replace(/\D/g,""); });
+    });
+    Object.keys(VAL).forEach(function(id){
+      var el=$(id); if(!el) return;
+      el.addEventListener("blur",function(){ limpiarErrorCampo(id,ERR_ID[id]); if(this.value.trim()){ var m=VAL[id](this.value.trim()); if(m) marcarError(id,ERR_ID[id],m); } });
+    });
+  }
+
+  function limpiarFormularioSolicitud(){
+    ["nombreEstudiante","documentoEstudiante","correoEstudiante","celularEstudiante","nivel","modalidad","periodo","motivo","descripcion","archivoPdf"].forEach(function(id){ var e=$(id); if(e) e.value=""; });
+    archivoBase64=null;
+    $("programa").innerHTML='<option value="">Seleccione primero nivel y modalidad...</option>';
+    limpiarErroresFormulario();
+    paso=1; [1,2,3].forEach(function(i){ $("paso"+i).classList.toggle("active",i===1); $("ws"+i).classList.toggle("active",i===1); $("ws"+i).classList.remove("done"); });
+    $("btnSiguiente").style.display="none";
+  }
+
+  /* ============ CONSULTA PÚBLICA (radicado O documento) ============ */
+  function consultarEstado(){
+    var q=val("busqueda");
+    if(!q){ $("consultaResultado").innerHTML='<div class="error">Digite su número de radicado o de documento.</div>'; return; }
+    $("btnConsultar").disabled=true;
+    $("consultaResultado").innerHTML='<div class="status-card">Consultando...</div>';
+
+    run("consultarEstadoPublico",[q],function(res){
+      $("btnConsultar").disabled=false;
+      if(!res||!res.success){ $("consultaResultado").innerHTML='<div class="error">'+esc((res&&res.error)||"No se pudo realizar la consulta.")+'</div>'; return; }
+      consultaCtx={criterio:res.criterio,documento:res.documento||""};
+      var html=(res.resultados.length>1?'<p class="small-note"><b>'+res.resultados.length+' solicitudes</b> encontradas para este documento (la más reciente primero).</p>':'');
+      html+=res.resultados.map(tarjetaConsulta).join("");
+      $("consultaResultado").innerHTML=html;
+      res.resultados.forEach(function(r){
+        if(!r.permiteSubsanar) return;
+        var f=$("sFile_"+r.radicado);
+        if(f) f.addEventListener("change",function(){ leerPdf(f,null,function(a){ archivosSubsana[r.radicado]=a; }); });
+      });
+    },function(m){
+      $("btnConsultar").disabled=false;
+      $("consultaResultado").innerHTML='<div class="error">'+esc(m)+'</div>';
+    });
+  }
+
+  function tarjetaConsulta(r){
+    var pasos=(r.seguimiento||[]).map(function(i,idx){
+      var c="", icono=idx+1;
+      if(i.estado==="ACEPTADO"){ c="ok"; icono="✓"; }
+      else if(i.estado==="EN TRÁMITE"){ c="now"; }
+      else if(i.estado==="REQUIERE SUBSANACIÓN"){ c="warn"; icono="!"; }
+      else if(i.estado==="NO APROBADA"){ c="bad"; icono="✕"; }
+      return '<div class="st '+c+'"><div class="dot">'+icono+'</div><div><div class="lbl">'+esc(i.etapa)+'</div><div class="est">'+esc(i.estado)+'</div>'+(i.fecha?'<div class="fch">'+esc(i.fecha)+'</div>':'')+'</div></div>';
+    }).join("");
+
+    var subsana="";
+    if(r.permiteSubsanar){
+      subsana='<div style="border-top:1px dashed var(--borde);margin-top:16px;padding-top:16px">'+
+        '<div class="status-title" style="font-size:16px;color:#D97706">Su solicitud requiere subsanación</div>'+
+        '<p class="hint" style="text-align:center">Cargue un nuevo PDF único con los documentos corregidos o completos.</p>'+
+        (consultaCtx.criterio==="RADICADO"?'<div class="field"><label>Confirme su número de documento</label><input id="sDoc_'+esc(r.radicado)+'" inputmode="numeric" placeholder="Solo números"></div>':'')+
+        '<div class="field"><label>Nuevo PDF de soportes</label><input type="file" id="sFile_'+esc(r.radicado)+'" accept="application/pdf,.pdf"></div>'+
+        '<div class="field"><label>Comentario (opcional)</label><textarea id="sCom_'+esc(r.radicado)+'" placeholder="Indique qué corrigió o agregó"></textarea></div>'+
+        '<div class="mini-actions"><button type="button" class="btn-orange" id="btnSub_'+esc(r.radicado)+'" onclick="enviarSubsanacion(\''+esc(r.radicado)+'\')">Enviar subsanación</button></div>'+
+        '<div id="subMsg_'+esc(r.radicado)+'"></div></div>';
+    }
+
+    return '<div class="status-card">'+
+      '<div class="status-title">'+esc(r.radicado)+'</div>'+
+      '<div style="text-align:center;font-size:12px;color:var(--gris);font-weight:700">'+esc(r.nombre)+' · '+esc(r.programa)+' · '+esc(r.periodo)+'</div>'+
+      '<div class="estado">'+esc(r.estado)+'</div>'+
+      '<div class="stepper">'+pasos+'</div>'+
+      '<p style="margin:0 0 6px"><b>Radicada:</b> '+esc(r.fechaSolicitud)+' · <b>Última actualización:</b> '+esc(r.ultimaActualizacion)+'</p>'+
+      '<p style="margin:0">'+esc(r.observacionPublica)+'</p>'+subsana+'</div>';
+  }
+
+  function enviarSubsanacion(rad){
+    var doc = consultaCtx.documento || val("sDoc_"+rad);
+    var msg=$("subMsg_"+rad);
+    if(!doc){ msg.innerHTML='<div class="error">Digite su número de documento.</div>'; return; }
+    if(!archivosSubsana[rad]){ msg.innerHTML='<div class="error">Debe adjuntar el nuevo PDF.</div>'; return; }
+    $("btnSub_"+rad).disabled=true;
+    msg.innerHTML='<div class="status-card">Enviando...</div>';
+    run("subsanarSolicitud",[{radicado:rad,documento:doc,comentario:val("sCom_"+rad),archivo:archivosSubsana[rad]}],function(res){
+      if(!res||!res.success){ $("btnSub_"+rad).disabled=false; msg.innerHTML='<div class="error">'+esc((res&&res.error)||"No se pudo enviar.")+'</div>'; return; }
+      msg.innerHTML='<div class="status-card success">'+esc(res.mensaje)+'</div>';
+      setTimeout(consultarEstado,1500);
+    },function(m){ $("btnSub_"+rad).disabled=false; msg.innerHTML='<div class="error">'+esc(m)+'</div>'; });
+  }
+
+  /* ============ LOGIN ============ */
+  function ingresarInterno(){
+    var correo=val("loginCorreo"), rol=val("loginRol"), clave=val("loginClave");
+    if(!correo||!rol||!clave){ $("loginMensaje").innerHTML='<div class="error">Digite correo, perfil y clave.</div>'; return; }
+    $("btnLogin").disabled=true;
+    $("loginMensaje").innerHTML='<div class="status-card">Validando acceso...</div>';
+
+    run("loginInterno",[correo,rol,clave],function(res){
+      $("btnLogin").disabled=false;
+      if(!res||!res.success){ $("loginMensaje").innerHTML='<div class="error">'+esc((res&&res.error)||"Acceso incorrecto.")+'</div>'; return; }
+      S.token=res.token; S.usuario={correo:res.correo,nombre:res.nombre,rol:res.rol,area:res.area};
+      S.tab=(res.rol==="ICETEX"?"ICX":"PENDIENTE"); S.busqueda=""; S.estado=""; S.sub="TODAS"; S.sel={}; S.limite=50; S.f={desde:"",hasta:"",estado:"",nivel:"",tipo:""}; S.g={lote:"",pr:"",periodo:""};
+      $("loginClave").value=""; $("loginMensaje").innerHTML="";
+      mostrarVista("panelInterno");
+      cargarPanel();
+    },function(m){ $("btnLogin").disabled=false; $("loginMensaje").innerHTML='<div class="error">'+esc(m)+'</div>'; });
+  }
+
+  function cerrarSesion(){
+    if(S.token) run("cerrarSesionInterna",[S.token],function(){},function(){});
+    if(S.adminBack&&S.adminBack.token) run("cerrarSesionInterna",[S.adminBack.token],function(){},function(){});
+    destruirGraficos();
+    S={ areaSel:"TODAS", areaVista:"LOTE", token:null, usuario:null, datos:[], resumen:null, lotes:[], tab:"PENDIENTE", busqueda:"", estado:"", sub:"TODAS", sel:{}, limite:50, ocupado:false, f:{desde:"",hasta:"",estado:"",nivel:"",tipo:""}, g:{lote:"",pr:"",periodo:""} };
+    $("panelContenido").innerHTML="";
+    $("loginCorreo").value=""; $("loginClave").value=""; $("loginRol").value="";
+    volverInicio();
+  }
+
+  function errorSesion(m){
+    if(/sesi[oó]n/i.test(m)){ toast(m,"err"); cerrarSesion(); return true; }
+    return false;
+  }
+
+  /* ============ PANEL ============ */
+  var NOMBRE_PANEL={ADMIN:"Financiamiento (administrador)",JEFATURA:"Jefatura de Financiamiento",CARTERA:"Cartera",CONTROL_INTERNO:"Control Interno",TESORERIA:"Tesorería",ICETEX:"Devoluciones ICETEX"};
+  function esAdmin(){ return S.usuario&&S.usuario.rol==="ADMIN"; }
+
+  function cargarPanel(){
+    if(!S.token) return;
+    if(!$("lista")) $("panelContenido").innerHTML='<div class="status-card">Cargando solicitudes...</div>';
+    run("obtenerPanel",[S.token],function(res){
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudo cargar el panel."; if(!errorSesion(m)) $("panelContenido").innerHTML='<div class="error">'+esc(m)+'</div>'; return; }
+      S.datos=res.solicitudes||[]; S.resumen=res.resumen; S.lotes=res.lotes||[]; S.periodos=res.periodos||[]; S.periodoActivo=res.periodoActivo||null;
+      var vivos={}; S.datos.forEach(function(s){ if(S.sel[s["Radicado"]]) vivos[s["Radicado"]]=true; }); S.sel=vivos;
+      renderPanel();
+    },function(m){ if(!errorSesion(m)) $("panelContenido").innerHTML='<div class="error">'+esc(m)+'</div>'; });
+  }
+
+  function pasaG(s){
+    var g=S.g;
+    if(g.lote&&String(s["Número paquete"]||"").trim()!==g.lote) return false;
+    if(g.pr&&s["Periodo recepción"]!==g.pr) return false;
+    if(g.periodo&&s["Periodo"]!==g.periodo) return false;
+    return true;
+  }
+  function datosG(){ return S.datos.filter(pasaG); }
+
+  /* Resumen que se recalcula con los filtros de lote / periodo */
+  function resumenG(){
+    var r={total:0,pendientes:0,aprobados:0,rechazados:0,valorSolicitado:0,valorAprobado:0,valorPagado:0};
+    datosG().forEach(function(s){
+      r.total++;
+      if(s._cat.indexOf("PENDIENTE")>=0) r.pendientes++;
+      if(s._cat.indexOf("APROBADO")>=0) r.aprobados++;
+      if(s._cat.indexOf("RECHAZADO")>=0) r.rechazados++;
+      r.valorSolicitado+=num(s["Valor solicitado"]);
+      if(up(s["Decisión Financiamiento"])==="APROBADA") r.valorAprobado+=num(s["Valor aprobado"]);
+      var e=up(s["Estado actual"]); if(e==="PAGO REALIZADO"||e==="FINALIZADA") r.valorPagado+=num(s["Valor aprobado"]);
+    });
+    return r;
+  }
+
+  function hayFiltroG(){ return !!(S.g.lote||S.g.pr||S.g.periodo); }
+
+  function renderPanel(){
+    destruirGraficos();
+    var u=S.usuario, admin=esAdmin();
+    $("panelContenido").innerHTML=
+      '<div class="panel-top"><div><h2>Panel '+esc(NOMBRE_PANEL[u.rol]||u.area)+'</h2><div class="who">'+esc(u.nombre)+' · '+esc(u.correo)+(S.adminBack?'':admin?' · <b>Acceso total</b>':' · Puede consultar todo el histórico; actúa sobre lo pendiente de su etapa')+'</div></div>'+
+      '<div class="mini-actions" style="margin:0"><button type="button" class="btn-green btn-small" onclick="cargarPanel()">Actualizar</button><button type="button" class="btn-dark btn-small" onclick="mostrarCambioClave()"'+(S.adminBack?' style="display:none"':'')+'>Cambiar mi clave</button><button type="button" class="btn-orange btn-small" onclick="cerrarSesion()">Cerrar sesión</button></div></div>'+
+      (S.adminBack?'<div class="per-banner per-bad" style="display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap"><span>Está viendo el panel de <b>'+esc(NOMBRE_PANEL[u.rol]||u.area)+'</b> como administrador. Sus acciones quedan registradas como «(administrador)».</span><button type="button" class="btn-green btn-small" onclick="volverAdmin()">Volver a mi perfil</button></div>':'')+
+      '<div id="claveBox"></div><div id="metricasBox"></div><div id="gBox"></div><div id="tabsBox"></div>'+
+      '<div id="toolbarBox"></div><div id="kpisBox"></div><div id="batchBox"></div><div id="lista"></div>';
+    pintarCabecera();
+    renderToolbar(); renderLista();
+  }
+
+  /* Tarjetas, filtros de lote/periodo y pestañas: se repintan al cambiar un filtro */
+  function pintarCabecera(){
+    var u=S.usuario, r=resumenG(), admin=esAdmin();
+    var tabs=[["PENDIENTE","Pendientes",r.pendientes],["APROBADO","Aprobados",r.aprobados],["RECHAZADO","Rechazados / devueltos",r.rechazados],["HISTORICO","Histórico",r.total]];
+    if(admin||u.rol==="JEFATURA") tabs.push(["LOTES","Lotes",S.lotes.length]);
+    if(admin) tabs.push(["AREAS","Control por área",areasPendientes().length]);
+    if(admin) tabs.push(["DASH","Dashboard y reportes",""]);
+    if(admin) tabs.push(["PERIODOS","Periodos y hojas",""]);
+    if(admin) tabs.push(["USUARIOS","Usuarios y claves",""]);
+    if(u.rol==="ICETEX"){ var nc=datosG().filter(function(s){ return s._cat.indexOf("CORREGIR")>=0; }).length; tabs.unshift(["CORREGIR","Por corregir",nc]); }
+    if(admin||u.rol==="ICETEX") tabs.unshift(["ICX","Nueva solicitud ICETEX",""]);
+
+    var metricas="", f=hayFiltroG()?' <span class="hint" style="display:inline">(con los filtros aplicados)</span>':'';
+    if(admin){
+      metricas=
+      '<div class="metrics">'+
+        '<div class="metric"><strong>'+r.pendientes+'</strong><span>Pendientes en Financiamiento</span></div>'+
+        '<div class="metric"><strong>'+r.aprobados+'</strong><span>Aprobadas por Financiamiento</span></div>'+
+        '<div class="metric"><strong>'+r.rechazados+'</strong><span>Rechazadas</span></div>'+
+        '<div class="metric"><strong>'+r.total+'</strong><span>Total solicitudes</span></div>'+
+      '</div>'+
+      '<div class="metrics">'+
+        '<div class="metric money-m"><strong>'+money(r.valorSolicitado)+'</strong><span>Valor solicitado</span></div>'+
+        '<div class="metric money-m"><strong>'+money(r.valorAprobado)+'</strong><span>Valor aprobado</span></div>'+
+        '<div class="metric money-m"><strong>'+money(r.valorPagado)+'</strong><span>Valor pagado</span></div>'+
+        '<div class="metric money-m"><strong>'+money(Math.max(r.valorAprobado-r.valorPagado,0))+'</strong><span>Por pagar</span></div>'+
+      '</div>';
+    }
+    $("metricasBox").innerHTML=metricas;
+    $("tabsBox").innerHTML='<div class="tabs" id="tabs">'+tabs.map(function(t){ return '<button type="button" class="tab'+(S.tab===t[0]?' active':'')+'" onclick="cambiarTab(\''+t[0]+'\')">'+t[1]+(t[2]!==""?'<span class="n">'+t[2]+'</span>':'')+'</button>'; }).join("")+'</div>';
+    pintarFiltrosG();
+  }
+
+  function pintarFiltrosG(){
+    if(S.tab==="LOTES"||S.tab==="ICX"||S.tab==="PERIODOS"||S.tab==="USUARIOS"){ $("gBox").innerHTML=""; return; }
+    function opts(lista,sel,todos){ return '<option value="">'+todos+'</option>'+lista.map(function(x){ return '<option value="'+esc(x)+'"'+(sel===x?' selected':'')+'>'+esc(x)+'</option>'; }).join(""); }
+    var lotes=uniq(S.datos.map(function(s){ return String(s["Número paquete"]||"").trim(); })).sort().reverse();
+    var prs=uniq(S.datos.map(function(s){ return s["Periodo recepción"]; })).sort().reverse();
+    var pers=uniq(S.datos.map(function(s){ return s["Periodo"]; })).sort().reverse();
+    $("gBox").innerHTML='<div class="dash-filters g-filters">'+
+      '<div><label>Lote</label><select id="gLote" onchange="cambiarG()">'+opts(lotes,S.g.lote,"Todos los lotes")+'</select></div>'+
+      '<div><label>Periodo de recepción (hoja)</label><select id="gPR" onchange="cambiarG()">'+opts(prs,S.g.pr,"Todos")+'</select></div>'+
+      '<div><label>Periodo académico del estudiante</label><select id="gPer" onchange="cambiarG()">'+opts(pers,S.g.periodo,"Todos")+'</select></div>'+
+      '<button type="button" class="btn-dark btn-small" onclick="limpiarG()">Quitar filtros</button></div>';
+  }
+
+  function cambiarG(){
+    S.g={lote:val("gLote"),pr:val("gPR"),periodo:val("gPer")}; S.limite=50;
+    pintarCabecera(); renderToolbar(); renderLista();
+  }
+  function limpiarG(){ S.g={lote:"",pr:"",periodo:""}; S.limite=50; pintarCabecera(); renderToolbar(); renderLista(); }
+
+  function cambiarTab(t){
+    S.tab=t; S.estado=""; S.sub="TODAS"; S.limite=50; S.sel={};
+    renderPanel();
+  }
+
+  function adminGrupo(estado){
+    if(estado==="APROBADA FINANCIAMIENTO") return "LISTAS";
+    if(estado==="PENDIENTE SUBSANACIÓN") return "SUBSANACION";
+    return "REVISAR";
+  }
+
+  function renderToolbar(){
+    if(S.tab==="LOTES"||S.tab==="DASH"||S.tab==="ICX"||S.tab==="PERIODOS"||S.tab==="AREAS"||S.tab==="USUARIOS"){ $("toolbarBox").innerHTML=""; return; }
+    var estados={}; datosG().forEach(function(s){ if(S.tab==="HISTORICO"||s._cat.indexOf(S.tab)>=0) estados[s["Estado actual"]]=1; });
+    var opts='<option value="">Todos los estados</option>'+Object.keys(estados).sort().map(function(e){ return '<option'+(S.estado===e?' selected':'')+'>'+esc(e)+'</option>'; }).join("");
+
+    var chips="";
+    if(esAdmin()&&S.tab==="PENDIENTE"){
+      chips='<div class="chips">'+[["TODAS","Todas"],["REVISAR","Por revisar"],["LISTAS","Listas para enviar a Jefatura de Financiamiento"],["SUBSANACION","En subsanación"]].map(function(c){
+        return '<button type="button" class="chip'+(S.sub===c[0]?' active':'')+'" onclick="cambiarSub(\''+c[0]+'\')">'+c[1]+'</button>'; }).join("")+'</div>';
+    }
+
+    $("toolbarBox").innerHTML=chips+
+      '<div class="toolbar"><input id="fBusca" placeholder="Buscar por radicado, nombre, documento, programa o lote" value="'+esc(S.busqueda)+'">'+
+      '<select id="fEstado" onchange="cambiarEstado(this.value)">'+opts+'</select>'+
+      '<button type="button" class="btn-dark btn-small" onclick="limpiarFiltros()">Limpiar</button></div>';
+
+    var f=$("fBusca"); var t;
+    f.addEventListener("input",function(){ clearTimeout(t); var v=this.value; t=setTimeout(function(){ S.busqueda=v; S.limite=50; renderLista(); },250); });
+  }
+
+  function cambiarSub(s){ S.sub=s; S.limite=50; renderToolbar(); renderLista(); }
+  function cambiarEstado(e){ S.estado=e; S.limite=50; renderLista(); }
+  function limpiarFiltros(){ S.busqueda=""; S.estado=""; S.sub="TODAS"; S.limite=50; renderToolbar(); renderLista(); }
+  function verMas(){ S.limite+=50; renderLista(); }
+
+  function filtrar(){
+    var q=norm(S.busqueda);
+    return S.datos.filter(function(s){
+      if(!pasaG(s)) return false;
+      if(S.tab!=="HISTORICO"&&s._cat.indexOf(S.tab)<0) return false;
+      if(S.estado&&s["Estado actual"]!==S.estado) return false;
+      if(esAdmin()&&S.tab==="PENDIENTE"&&S.sub!=="TODAS"&&adminGrupo(s["Estado actual"])!==S.sub) return false;
+      if(q){
+        var txt=norm([s["Radicado"],s["Nombre estudiante"],s["Documento estudiante"],s["Programa"],s["Número paquete"],s["Correo estudiante"]].join(" "));
+        if(txt.indexOf(q)<0) return false;
+      }
+      return true;
+    });
+  }
+
+  function esSeleccionable(s){
+    if(S.tab!=="PENDIENTE") return false;
+    var rol=S.usuario.rol, e=s["Estado actual"];
+    if(rol==="ADMIN") return e==="APROBADA FINANCIAMIENTO";
+    if(ESTADO_ENTRADA[rol]) return e===ESTADO_ENTRADA[rol];
+    if(rol==="TESORERIA") return e==="ENVIADA A TESORERÍA"||e==="PAGO PROGRAMADO";
+    return false;
+  }
+
+  function claseEstado(e){
+    if(/RECHAZADA|DEVUELTA/.test(e)) return "bad";
+    if(/PAGO REALIZADO|FINALIZADA|APROBADA/.test(e)) return "ok";
+    if(/SUBSANACI/.test(e)) return "warn";
+    return "";
+  }
+
+  /* KPIs de perfiles no administradores: reflejan la tabla que se está viendo */
+  function renderKpis(lista){
+    if(esAdmin()||S.tab==="LOTES"||S.tab==="DASH"||S.tab==="ICX"||S.tab==="PERIODOS"||S.tab==="AREAS"||S.tab==="USUARIOS"){ $("kpisBox").innerHTML=""; return; }
+    var sol=0, apr=0;
+    lista.forEach(function(s){ sol+=num(s["Valor solicitado"]); apr+=num(s["Valor aprobado"]); });
+    var etiqueta={PENDIENTE:"pendientes",APROBADO:"aprobadas por mi perfil",RECHAZADO:"devueltas / rechazadas",HISTORICO:"en el histórico"}[S.tab]||"en esta vista";
+    var html='<div class="metrics m3">'+
+      '<div class="metric destacado"><strong>'+lista.length+'</strong><span>Solicitudes '+etiqueta+'</span></div>'+
+      '<div class="metric destacado money-m"><strong>'+money(sol)+'</strong><span>Valor solicitado de la tabla</span></div>'+
+      '<div class="metric destacado money-m"><strong>'+money(apr)+'</strong><span>Valor aprobado de la tabla</span></div></div>';
+
+    if(S.tab==="APROBADO"||S.tab==="HISTORICO"){
+      var ap=datosG().filter(function(s){ return s._cat.indexOf("APROBADO")>=0; });
+      var v=0; ap.forEach(function(s){ v+=num(s["Valor aprobado"]); });
+      html+='<div class="obs-box" style="margin:0 0 12px;background:#EEF9F1;border-left-color:var(--verde)"><b>Histórico de lo aprobado por mi perfil:</b> '+ap.length+' solicitud(es) · '+money(v)+'</div>';
+    }
+    $("kpisBox").innerHTML=html;
+  }
+
+  function renderLista(){
+    if(S.tab==="ICX"){ renderIcx(); $("batchBox").innerHTML=""; $("kpisBox").innerHTML=""; return; }
+    if(S.tab==="PERIODOS"){ renderPeriodos(); $("batchBox").innerHTML=""; $("kpisBox").innerHTML=""; return; }
+    if(S.tab==="USUARIOS"){ renderUsuarios(); $("batchBox").innerHTML=""; $("kpisBox").innerHTML=""; return; }
+    if(S.tab==="AREAS"){ renderAreas(); $("batchBox").innerHTML=""; $("kpisBox").innerHTML=""; return; }
+    if(S.tab==="DASH"){ renderDash(); $("batchBox").innerHTML=""; $("kpisBox").innerHTML=""; return; }
+    if(S.tab==="LOTES"){ renderLotes(); $("batchBox").innerHTML=""; $("kpisBox").innerHTML=""; return; }
+    var lista=filtrar();
+    var visibles=lista.slice(0,S.limite);
+
+    var html=visibles.map(function(s){
+      var r=s["Radicado"], sel=esSeleccionable(s);
+      var valor=num(s["Valor aprobado"])||num(s["Valor solicitado"]);
+      return '<div class="item" id="it_'+esc(r)+'">'+
+        '<div class="item-head" onclick="toggleDetalle(\''+esc(r)+'\')">'+
+          '<div>'+(sel?'<input type="checkbox" '+(S.sel[r]?'checked':'')+' onclick="event.stopPropagation();toggleSel(\''+esc(r)+'\',this.checked)">':'')+'</div>'+
+          '<div><div class="rad">'+esc(r)+(s["Tipo solicitud"]==="ICETEX"?' <span class="tag-icx">ICETEX</span>':'')+'</div><div class="sub">'+esc(s["Fecha solicitud"]||"")+(s["Número paquete"]?' · '+esc(s["Número paquete"]):'')+(s["Periodo recepción"]?' · '+esc(s["Periodo recepción"]):'')+'</div></div>'+
+          '<div class="col-prog"><b style="font-size:13px">'+esc(s["Nombre estudiante"])+'</b><div class="sub">'+esc(s["Programa"])+' · '+esc(s["Periodo"])+(valor?' · <b>'+money(valor)+'</b>':'')+'</div></div>'+
+          '<div><span class="badge '+claseEstado(s["Estado actual"])+'">'+esc(s["Estado actual"])+'</span></div>'+
+          '<div class="col-dias sub" style="text-align:right">'+esc(s["Días en proceso"]||"0")+' d. háb.</div>'+
+        '</div><div class="item-body" id="body_'+esc(r)+'"></div></div>';
+    }).join("");
+
+    if(!lista.length) html='<div class="empty-panel">No hay solicitudes para mostrar con este filtro.</div>';
+    if(lista.length>visibles.length) html+='<div class="mini-actions"><button type="button" class="btn-dark btn-small" onclick="verMas()">Ver más ('+(lista.length-visibles.length)+' restantes)</button></div>';
+
+    $("lista").innerHTML=html;
+    renderKpis(lista);
+    renderBatch(lista);
+  }
+
+  function renderBatch(lista){
+    var seleccionables=lista.filter(esSeleccionable);
+    if(!seleccionables.length){ $("batchBox").innerHTML=""; return; }
+    var n=Object.keys(S.sel).length, rol=S.usuario.rol, b="";
+
+    if(rol==="ADMIN"){
+      b='<button type="button" class="btn-green btn-small" '+(n?'':'disabled')+' onclick="enviarSeleccion(\'LOTE\')">Enviar '+n+' seleccionada(s) como LOTE a Jefatura de Financiamiento</button>'+
+        '<button type="button" class="btn-dark btn-small" '+(n?'':'disabled')+' onclick="enviarSeleccion(\'INDIVIDUAL\')">Enviar '+n+' una a una</button>';
+    } else if(rol==="TESORERIA"){
+      b='<button type="button" class="btn-green btn-small" '+(n?'':'disabled')+' onclick="accionSeleccion(\'PROGRAMAR_PAGO\')">Programar pago ('+n+')</button>'+
+        '<button type="button" class="btn-green btn-small" '+(n?'':'disabled')+' onclick="accionSeleccion(\'PAGO_REALIZADO\')">Pago realizado ('+n+')</button>'+
+        '<button type="button" class="btn-orange btn-small" '+(n?'':'disabled')+' onclick="accionSeleccion(\'DEVOLVER\')">Devolver ('+n+')</button>';
+    } else {
+      b='<button type="button" class="btn-green btn-small" '+(n?'':'disabled')+' onclick="accionSeleccion(\'APROBAR\')">Aprobar ('+n+')</button>'+
+        '<button type="button" class="btn-orange btn-small" '+(n?'':'disabled')+' onclick="accionSeleccion(\'DEVOLVER\')">Devolver ('+n+')</button>';
+    }
+
+    var prev=$("batchObs")?$("batchObs").value:"";
+    $("batchBox").innerHTML='<div class="batch"><div class="row">'+
+      '<label style="margin:0;display:flex;align-items:center;gap:8px"><input type="checkbox" '+(n&&n===seleccionables.length?'checked':'')+' onchange="selTodas(this.checked)"> Seleccionar todas ('+seleccionables.length+')</label>'+
+      '<textarea id="batchObs" placeholder="Observación para las seleccionadas'+(rol==="ADMIN"?' (opcional)':' (obligatoria al devolver)')+'">'+esc(prev)+'</textarea></div>'+
+      '<div class="row" style="margin-top:10px">'+b+'</div></div>';
+  }
+
+  function toggleSel(r,c){ if(c) S.sel[r]=true; else delete S.sel[r]; renderBatch(filtrar()); }
+  function selTodas(c){ S.sel={}; if(c) filtrar().filter(esSeleccionable).forEach(function(s){ S.sel[s["Radicado"]]=true; }); renderLista(); }
+  function enviarSeleccion(modo){ ejecutar(Object.keys(S.sel),"ENVIAR_JEFATURA",val("batchObs"),{},modo); }
+  function accionSeleccion(accion){
+    var rads=Object.keys(S.sel);
+    if(accion==="PAGO_REALIZADO"){
+      var sin=rads.filter(function(r){ var s=S.datos.filter(function(x){ return x["Radicado"]===r; })[0]; return s&&!s["Comprobante pago"]; });
+      if(sin.length){ alert("Falta el comprobante de pago en "+sin.length+" solicitud(es):\n\n"+sin.join("\n")+"\n\nAbra cada solicitud, cargue su comprobante (PDF) y vuelva a marcar el pago."); return; }
+    }
+    ejecutar(rads,accion,val("batchObs"),{},"");
+  }
+
+  /* ----- LOTES ----- */
+  function renderLotes(){
+    $("toolbarBox").innerHTML="";
+    if(!S.lotes.length){ $("lista").innerHTML='<div class="empty-panel">Aún no se han creado lotes.</div>'; return; }
+    var filas=S.lotes.map(function(l){
+      return '<tr><td><b>'+esc(l["Número paquete"])+'</b></td><td>'+esc(l["Fecha creación"])+'</td><td>'+esc(l["Creado por"])+'</td><td>'+esc(l["Cantidad solicitudes"])+'</td><td>'+money(Number(l["Valor total aprobado"])||0)+'</td>'+
+        '<td><span class="badge '+(/APROBADO/.test(l["Estado paquete"])?'ok':'')+'">'+esc(l["Estado paquete"])+'</span></td>'+
+        '<td style="max-width:260px;word-break:break-word">'+esc(l["Solicitudes incluidas"])+'</td>'+
+        '<td><button type="button" class="btn-dark btn-small" onclick="verLote(\''+esc(l["Número paquete"])+'\')">Ver solicitudes</button></td></tr>';
+    }).join("");
+    $("lista").innerHTML='<table class="tbl"><thead><tr><th>Lote</th><th>Creado</th><th>Por</th><th>Cant.</th><th>Valor aprobado</th><th>Estado</th><th>Solicitudes</th><th></th></tr></thead><tbody>'+filas+'</tbody></table>';
+  }
+  function verLote(num){ S.tab="HISTORICO"; S.busqueda=num; S.estado=""; S.sub="TODAS"; S.limite=50; S.sel={}; renderPanel(); }
+
+  /* ============ CONTROL POR ÁREA (ADMIN) ============ */
+  var AREAS_CTRL=[
+    {k:"JEFATURA",n:"Jefatura de Financiamiento",estados:["ENVIADA A JEFATURA"],fecha:"Fecha envío Jefatura",plazo:2},
+    {k:"CARTERA",n:"Cartera",estados:["ENVIADA A CARTERA"],fecha:"Fecha envío Cartera",plazo:7},
+    {k:"CONTROL",n:"Control Interno",estados:["ENVIADA A CONTROL INTERNO"],fecha:"Fecha envío Control Interno",plazo:7},
+    {k:"TESORERIA",n:"Tesorería",estados:["ENVIADA A TESORERÍA","PAGO PROGRAMADO"],fecha:"Fecha envío Tesorería",plazo:10},
+    {k:"DEVUELTAS",n:"Devueltas por corregir",estados:["DEVUELTA POR JEFATURA","DEVUELTA POR CARTERA","DEVUELTA POR CONTROL INTERNO","DEVUELTA POR TESORERÍA"],fecha:"Última actualización",plazo:0}
+  ];
+  function areaDe(s){
+    var e=up(s["Estado actual"]);
+    for(var i=0;i<AREAS_CTRL.length;i++) if(AREAS_CTRL[i].estados.indexOf(e)>=0) return AREAS_CTRL[i];
+    return null;
+  }
+  function areasPendientes(){
+    return datosG().filter(function(s){ return !!areaDe(s); });
+  }
+  function diasCal(t){
+    var d=fechaHora(t); if(!d) return null;
+    var hoy=new Date(); hoy=new Date(hoy.getFullYear(),hoy.getMonth(),hoy.getDate());
+    return Math.max(0,Math.round((hoy-new Date(d.getFullYear(),d.getMonth(),d.getDate()))/86400000));
+  }
+  function infoArea(s){
+    var a=areaDe(s), d=diasCal(s[a.fecha]);
+    return {area:a,dias:d,vencida:!!(a.plazo&&d!==null&&d>a.plazo),desde:s[a.fecha]||""};
+  }
+  function renderAreas(){
+    var todas=areasPendientes().map(function(s){ var i=infoArea(s); return {s:s,i:i}; });
+    var sel=S.areaSel, vista=S.areaVista;
+    function resumen(lista){
+      var v=0,max=0,venc=0;
+      lista.forEach(function(x){ v+=num(x.s["Valor aprobado"])||num(x.s["Valor solicitado"]); if(x.i.dias!==null&&x.i.dias>max) max=x.i.dias; if(x.i.vencida) venc++; });
+      return {n:lista.length,v:v,max:max,venc:venc};
+    }
+    var tarjetas=[{k:"TODAS",n:"Todas las áreas",lista:todas}].concat(AREAS_CTRL.map(function(a){ return {k:a.k,n:a.n,lista:todas.filter(function(x){ return x.i.area.k===a.k; })}; }));
+    var cards='<div class="area-cards">'+tarjetas.map(function(t){
+      var r=resumen(t.lista);
+      return '<button type="button" class="area-card'+(sel===t.k?' active':'')+'" onclick="S.areaSel=\''+t.k+'\';renderAreas()">'+
+        '<span class="ac-n">'+r.n+'</span><span class="ac-t">'+esc(t.n)+'</span>'+
+        '<span class="ac-s">'+money(r.v)+(r.n?' · máx. '+r.max+' d':'')+'</span>'+
+        (r.venc?'<span class="chip chip-red">'+r.venc+' fuera de plazo</span>':'')+'</button>';
+    }).join("")+'</div>';
+
+    var lista=sel==="TODAS"?todas:todas.filter(function(x){ return x.i.area.k===sel; });
+    lista.sort(function(a,b){ return (b.i.dias||0)-(a.i.dias||0); });
+    var nombre=(tarjetas.filter(function(t){ return t.k===sel; })[0]||{}).n||"";
+
+    var toggle='<div class="chips"><button type="button" class="chip'+(vista==="LOTE"?' active':'')+'" onclick="S.areaVista=\'LOTE\';renderAreas()">Por lote</button>'+
+      '<button type="button" class="chip'+(vista==="INDIVIDUAL"?' active':'')+'" onclick="S.areaVista=\'INDIVIDUAL\';renderAreas()">Solicitud por solicitud</button></div>';
+
+    var tabla="";
+    if(!lista.length){
+      tabla='<div class="empty-panel">No hay solicitudes pendientes'+(sel==="TODAS"?' en las áreas':' en '+esc(nombre))+(hayFiltroG()?' con los filtros aplicados':'')+'.</div>';
+    } else if(vista==="LOTE"){
+      var grupos={}, orden=[];
+      lista.forEach(function(x){
+        var l=String(x.s["Número paquete"]||"").trim()||"Sin lote (individuales)", k=l+"|"+(sel==="TODAS"?x.i.area.k:"");
+        if(!grupos[k]){ grupos[k]={lote:l,area:x.i.area,items:[]}; orden.push(k); }
+        grupos[k].items.push(x);
+      });
+      var filas=orden.map(function(k){
+        var g=grupos[k], r=resumen(g.items), rads=g.items.map(function(x){ return x.s["Radicado"]; });
+        var busq=g.lote.indexOf("Sin lote")===0?rads[0]:g.lote;
+        return '<tr><td><b>'+esc(g.lote)+'</b></td>'+(sel==="TODAS"?'<td>'+esc(g.area.n)+'</td>':'')+'<td>'+r.n+'</td><td>'+money(r.v)+'</td>'+
+          '<td>'+(r.max!==null?'<b>'+r.max+'</b> d':'—')+(g.area.plazo?' / '+g.area.plazo:'')+(r.venc?' <span class="chip chip-red">'+r.venc+' vencida(s)</span>':'')+'</td>'+
+          '<td style="max-width:280px;word-break:break-word;font-size:11px">'+esc(rads.join(", "))+'</td>'+
+          '<td><button type="button" class="btn-dark btn-small" onclick="verBusqueda(\''+esc(busq)+'\')">Ver</button></td></tr>';
+      }).join("");
+      tabla='<table class="tbl"><thead><tr><th>Lote</th>'+(sel==="TODAS"?'<th>Área</th>':'')+'<th>Cant.</th><th>Valor</th><th>Días en el área / plazo</th><th>Solicitudes</th><th></th></tr></thead><tbody>'+filas+'</tbody></table>'+
+        '<p class="hint" style="display:block">Las solicitudes enviadas una a una (sin lote) se agrupan en «Sin lote»; use «Solicitud por solicitud» para verlas separadas.</p>';
+    } else {
+      var f2=lista.slice(0,300).map(function(x){
+        var s=x.s;
+        return '<tr><td><b>'+esc(s["Radicado"])+'</b>'+(s["Tipo solicitud"]==="ICETEX"?' <span class="tag-icx">ICETEX</span>':'')+'</td>'+(sel==="TODAS"?'<td>'+esc(x.i.area.n)+'</td>':'')+
+          '<td>'+esc(s["Nombre estudiante"])+'<div class="sub">'+esc(s["Programa"]||"")+'</div></td><td>'+esc(String(s["Número paquete"]||"")||"—")+'</td>'+
+          '<td>'+money(num(s["Valor aprobado"])||num(s["Valor solicitado"]))+'</td><td>'+esc(x.i.desde||"—")+'</td>'+
+          '<td><b>'+(x.i.dias===null?"—":x.i.dias)+'</b> d'+(x.i.area.plazo?' / '+x.i.area.plazo:'')+(x.i.vencida?' <span class="chip chip-red">vencida</span>':'')+'</td>'+
+          '<td><span class="badge '+claseEstado(s["Estado actual"])+'">'+esc(s["Estado actual"])+'</span></td>'+
+          '<td><button type="button" class="btn-dark btn-small" onclick="verBusqueda(\''+esc(s["Radicado"])+'\')">Abrir</button></td></tr>';
+      }).join("");
+      tabla='<table class="tbl"><thead><tr><th>Radicado</th>'+(sel==="TODAS"?'<th>Área</th>':'')+'<th>Estudiante</th><th>Lote</th><th>Valor</th><th>Desde</th><th>Días / plazo</th><th>Estado</th><th></th></tr></thead><tbody>'+f2+'</tbody></table>'+
+        (lista.length>300?'<p class="hint" style="display:block">Se muestran las 300 más antiguas de '+lista.length+'. Use los filtros de lote o periodo para acotar.</p>':'');
+    }
+    $("lista").innerHTML=cards+toggle+'<div style="overflow-x:auto">'+tabla+'</div>'+
+      '<p class="hint" style="display:block">Los días se cuentan en calendario desde que la solicitud llegó al área. Para avisar a las áreas con plazo vencido use el panel de alertas en «Dashboard y reportes».</p>';
+  }
+  function verBusqueda(q){ S.tab="HISTORICO"; S.busqueda=q; S.estado=""; S.sub="TODAS"; S.limite=50; S.sel={}; renderPanel(); }
+
+  /* ============ DASHBOARD Y REPORTES (ADMIN) ============ */
+  function destruirGraficos(){ Object.keys(CH).forEach(function(k){ try{ CH[k].destroy(); }catch(e){} }); CH={}; }
+
+  function datosDash(){
+    var f=S.f, d=f.desde?new Date(f.desde+"T00:00:00"):null, h=f.hasta?new Date(f.hasta+"T23:59:59"):null;
+    return S.datos.filter(function(s){
+      if(!pasaG(s)) return false;
+      var fs=fechaDe(s);
+      if(d&&(!fs||fs<d)) return false;
+      if(h&&(!fs||fs>h)) return false;
+      if(f.estado&&s["Estado actual"]!==f.estado) return false;
+      if(f.nivel&&s["Nivel"]!==f.nivel) return false;
+      if(f.tipo&&s["Tipo solicitud"]!==f.tipo) return false;
+      return true;
+    });
+  }
+
+  function renderDash(){
+    var periodos=uniq(S.datos.map(function(s){ return s["Periodo"]; })).sort();
+    var estados=uniq(S.datos.map(function(s){ return s["Estado actual"]; })).sort();
+    var f=S.f;
+    function opts(lista,sel,todos){ return '<option value="">'+todos+'</option>'+lista.map(function(x){ return '<option'+(sel===x?' selected':'')+'>'+esc(x)+'</option>'; }).join(""); }
+
+    $("lista").innerHTML=
+      '<div class="dash-filters">'+
+        '<div><label>Desde</label><input type="date" id="dDesde" value="'+esc(f.desde)+'" onchange="aplicarFiltroDash()"></div>'+
+        '<div><label>Hasta</label><input type="date" id="dHasta" value="'+esc(f.hasta)+'" onchange="aplicarFiltroDash()"></div>'+
+        '<div><label>Lote</label><select id="dLote" onchange="aplicarFiltroDash()">'+opts(uniq(S.datos.map(function(s){ return String(s["Número paquete"]||"").trim(); })).sort().reverse(),S.g.lote,"Todos")+'</select></div>'+
+        '<div><label>Periodo académico</label><select id="dPeriodo" onchange="aplicarFiltroDash()">'+opts(periodos,S.g.periodo,"Todos")+'</select></div>'+
+        '<div><label>Estado</label><select id="dEstado" onchange="aplicarFiltroDash()">'+opts(estados,f.estado,"Todos")+'</select></div>'+
+        '<div><label>Nivel</label><select id="dNivel" onchange="aplicarFiltroDash()">'+opts(["Pregrado","Posgrado"],f.nivel,"Todos")+'</select></div>'+
+        '<div><label>Periodo de recepción</label><select id="dPR" onchange="aplicarFiltroDash()">'+opts(uniq(S.datos.map(function(s){ return s["Periodo recepción"]; })).sort(),S.g.pr,"Todos")+'</select></div>'+
+        '<div><label>Tipo</label><select id="dTipo" onchange="aplicarFiltroDash()">'+opts(["ESTUDIANTE","ICETEX"],f.tipo,"Todos")+'</select></div>'+
+        '<button type="button" class="btn-dark btn-small" onclick="limpiarFiltroDash()">Limpiar</button>'+
+      '</div>'+
+      '<div class="mini-actions" style="justify-content:flex-start;margin:0 0 14px">'+
+        '<button type="button" class="btn-green btn-small" id="btnReporte" onclick="descargarReporte()">Descargar reporte en Excel (con estos filtros)</button>'+
+        '<span class="hint" style="align-self:center">Incluye hoja de resumen con gráficos y hoja de detalle.</span></div>'+
+      '<div id="dashAlertas"></div>'+
+      '<div id="dashPlazos"></div>'+
+      '<div id="dashKpis"></div>'+
+      '<div class="charts">'+
+        '<div class="chart-card"><h4>Solicitudes por estado</h4><div class="box"><canvas id="chEstado"></canvas></div></div>'+
+        '<div class="chart-card"><h4>Solicitudes por etapa actual</h4><div class="box"><canvas id="chEtapa"></canvas></div></div>'+
+        '<div class="chart-card full"><h4>Solicitudes por mes</h4><div class="box"><canvas id="chMes"></canvas></div></div>'+
+        '<div class="chart-card full"><h4>Valores por periodo académico del estudiante (solicitado · aprobado · pagado)</h4><div class="box"><canvas id="chPeriodo"></canvas></div></div>'+
+        '<div class="chart-card full"><h4>Valores por periodo de recepción — hoja donde se tramita (solicitado · aprobado · pagado)</h4><div class="box"><canvas id="chRecepcion"></canvas></div></div>'+
+        '<div class="chart-card"><h4>Programas con más solicitudes</h4><div class="box"><canvas id="chPrograma"></canvas></div></div>'+
+        '<div class="chart-card"><h4>Motivos de solicitud</h4><div class="box"><canvas id="chMotivo"></canvas></div></div>'+
+        '<div class="chart-card full"><h4>Tiempo promedio por etapa (días hábiles entre fases)</h4><div class="box"><canvas id="chTiempos"></canvas></div></div>'+
+      '</div>'+
+      '<div id="dashTabla"></div>';
+    actualizarDash();
+    cargarPlazos();
+  }
+
+  function aplicarFiltroDash(){
+    S.f={desde:val("dDesde"),hasta:val("dHasta"),estado:val("dEstado"),nivel:val("dNivel"),tipo:val("dTipo")};
+    S.g={lote:val("dLote"),pr:val("dPR"),periodo:val("dPeriodo")};
+    pintarCabecera(); actualizarDash();
+  }
+  function limpiarFiltroDash(){ S.f={desde:"",hasta:"",estado:"",nivel:"",tipo:""}; S.g={lote:"",pr:"",periodo:""}; pintarCabecera(); renderDash(); }
+
+  function agrupar(lista,fn){
+    var m={};
+    lista.forEach(function(s){
+      var k=fn(s)||"Sin dato";
+      if(!m[k]) m[k]={n:0,sol:0,apr:0,pag:0};
+      m[k].n++; m[k].sol+=num(s["Valor solicitado"]);
+      if(up(s["Decisión Financiamiento"])==="APROBADA") m[k].apr+=num(s["Valor aprobado"]);
+      var e=up(s["Estado actual"]); if(e==="PAGO REALIZADO"||e==="FINALIZADA") m[k].pag+=num(s["Valor aprobado"]);
+    });
+    return m;
+  }
+
+  function grafico(id,tipo,labels,datasets,opciones){
+    if(typeof Chart==="undefined"){ var c=$(id); if(c&&c.parentNode) c.parentNode.innerHTML='<div class="empty-panel">No se pudo cargar la librería de gráficos. Use la descarga en Excel.</div>'; return; }
+    if(CH[id]){ try{ CH[id].destroy(); }catch(e){} }
+    var ctx=$(id); if(!ctx) return;
+    CH[id]=new Chart(ctx,{type:tipo,data:{labels:labels,datasets:datasets},options:Object.assign({responsive:true,maintainAspectRatio:false,plugins:{legend:{display:tipo==="doughnut"||datasets.length>1,position:"bottom",labels:{boxWidth:12,font:{size:10}}}}},opciones||{})});
+  }
+
+  /* ----- ALERTAS Y TIEMPOS (administrador) ----- */
+  function fechaHora(t){ var m=/^(\d{2})\/(\d{2})\/(\d{4})(?: (\d{2}):(\d{2}))?/.exec(t||""); return m?new Date(+m[3],+m[2]-1,+m[1],+(m[4]||0),+(m[5]||0)):null; }
+  function diasHab(a,b){
+    if(!a||!b||b<a) return 0;
+    var n=0, d=new Date(a.getFullYear(),a.getMonth(),a.getDate()), fin=new Date(b.getFullYear(),b.getMonth(),b.getDate());
+    while(d<fin){ d.setDate(d.getDate()+1); var w=d.getDay(); if(w!==0&&w!==6) n++; }
+    return n;
+  }
+  /* ============ NUEVA SOLICITUD ICETEX ============ */
+  var archivosIcx={correo:null,calculo:null};
+  function renderIcx(){
+    var pa=S.periodoActivo;
+    var banner=pa?'<div class="per-banner '+(pa.vencido?'per-warn':'per-ok')+'">Las solicitudes se recibirán en el periodo <b>'+esc(pa.periodo)+'</b> (hoja «'+esc(pa.hoja)+'»).'+(pa.vencido?' <b>El periodo terminó el '+esc(pa.hasta)+'.</b>':'')+'</div>':
+      '<div class="per-banner per-bad"><b>No hay un periodo activo.</b> El administrador debe activar uno para poder radicar.</div>';
+    $("lista").innerHTML=banner+'<div class="ec-box" style="background:#fff"><h4>Radicar devolución a ICETEX</h4>'+
+      '<p class="hint" style="display:block">Al guardar se genera el radicado y la solicitud pasa directamente a <b>Jefatura de Financiamiento</b>; luego sigue Cartera, Control Interno y Tesorería.</p>'+
+      '<div class="edit-grid">'+
+        '<div><label>Documento del estudiante *</label><input id="ix_doc" inputmode="numeric" placeholder="Solo números"></div>'+
+        '<div class="full"><label>Nombre del estudiante *</label><input id="ix_nom"></div>'+
+        '<div><label>Nivel *</label><select id="ix_niv" onchange="ixProgramas()"><option value="">Seleccione...</option><option>Pregrado</option><option>Posgrado</option></select></div>'+
+        '<div><label>Modalidad *</label><select id="ix_mod" onchange="ixProgramas()"><option value="">Seleccione...</option><option>Presencial</option><option>Virtual</option><option>A distancia</option></select></div>'+
+        '<div class="full"><label>Programa *</label><select id="ix_prog"><option value="">Seleccione primero nivel y modalidad...</option></select></div>'+
+        '<div><label>Periodo académico del estudiante *</label><input id="ix_per" placeholder="Ej: 2026-1 (también 20261, 2026.1 o 2026 1)" onblur="this.value=normPeriodo(this.value)||this.value"></div>'+
+        '<div><label>Valor a devolver a ICETEX (según cálculo) *</label><input id="ix_val" type="number" min="0"></div>'+
+        '<div class="full"><label>Observación (opcional)</label><textarea id="ix_desc" placeholder="Detalle adicional del caso"></textarea></div>'+
+        '<div><label>Soporte de correo (PDF) *</label><input type="file" id="ix_f1" accept="application/pdf,.pdf" onchange="ixArchivo(\'correo\',this)"></div>'+
+        '<div><label>Cálculo de la devolución a ICETEX (PDF) *</label><input type="file" id="ix_f2" accept="application/pdf,.pdf" onchange="ixArchivo(\'calculo\',this)"></div>'+
+      '</div><div id="ixMsg"></div>'+
+      '<div class="mini-actions" style="justify-content:flex-start"><button type="button" class="btn-green" id="btnIcx" onclick="enviarIcx()">Radicar y enviar a Jefatura de Financiamiento</button></div></div>';
+  }
+  function ixArchivo(k,input){ leerPdf(input,null,function(a){ archivosIcx[k]=a; }); }
+  function ixProgramas(){
+    var l=(programas||{})[val("ix_niv")+"|"+val("ix_mod")]||[], p=$("ix_prog");
+    if(!val("ix_niv")||!val("ix_mod")){ p.innerHTML='<option value="">Seleccione primero nivel y modalidad...</option>'; return; }
+    p.innerHTML=l.length?'<option value="">Seleccione...</option>'+l.map(function(x){ return '<option>'+esc(x)+'</option>'; }).join(""):'<option value="">No hay programas para esta modalidad</option>';
+  }
+  function enviarIcx(){
+    var p={documentoEstudiante:val("ix_doc"),nombreEstudiante:val("ix_nom"),nivel:val("ix_niv"),modalidad:val("ix_mod"),programa:val("ix_prog"),periodo:normPeriodo(val("ix_per"))||val("ix_per"),valor:val("ix_val"),descripcion:val("ix_desc"),archivoCorreo:archivosIcx.correo,archivoCalculo:archivosIcx.calculo};
+    var falta=!p.documentoEstudiante||!p.nombreEstudiante||!p.nivel||!p.modalidad||!p.programa||!p.periodo||!p.valor?"Complete los campos obligatorios (*).":(!p.archivoCorreo||!p.archivoCalculo?"Adjunte los dos PDF: soporte de correo y cálculo.":"");
+    if(falta){ $("ixMsg").innerHTML='<div class="error">'+falta+'</div>'; return; }
+    $("btnIcx").disabled=true; $("ixMsg").innerHTML='<div class="status-card">Radicando...</div>';
+    run("guardarSolicitudIcetex",[S.token,p],function(res){
+      $("btnIcx").disabled=false;
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudo radicar."; if(!errorSesion(m)) $("ixMsg").innerHTML='<div class="error">'+esc(m)+'</div>'; return; }
+      archivosIcx={correo:null,calculo:null};
+      toast("Radicado "+res.radicado+" enviado a Jefatura de Financiamiento.","ok");
+      cargarPanel();
+      setTimeout(function(){ if($("lista")&&S.tab==="ICX") $("ixMsg")&&($("ixMsg").innerHTML='<div class="status-card success">Radicado <b>'+esc(res.radicado)+'</b> (periodo '+esc(res.periodo)+') enviado a Jefatura de Financiamiento. Puede radicar otra solicitud.</div>'); },600);
+    },function(m){ $("btnIcx").disabled=false; $("ixMsg").innerHTML='<div class="error">'+esc(m)+'</div>'; });
+  }
+
+
+  /* ============ CLAVES Y ACCESO DEL ADMINISTRADOR ============ */
+  function mostrarCambioClave(){
+    var b=$("claveBox"); if(!b) return;
+    if(b.innerHTML){ b.innerHTML=""; return; }
+    b.innerHTML='<div class="ec-box" style="background:#fff"><h4>Cambiar mi clave de acceso</h4>'+
+      '<div class="edit-grid"><div><label>Clave actual</label><input id="ck_a" type="password" autocomplete="current-password"></div>'+
+      '<div><label>Nueva clave</label><input id="ck_n" type="password" autocomplete="new-password"></div>'+
+      '<div><label>Confirmar nueva clave</label><input id="ck_c" type="password" autocomplete="new-password"></div></div>'+
+      '<p class="hint" style="display:block">Mínimo 8 caracteres, con letras y números, sin espacios. Recibirá un aviso por correo (sin la clave).</p>'+
+      '<div class="mini-actions" style="justify-content:flex-start"><button type="button" class="btn-green btn-small" id="btnCk" onclick="guardarMiClave()">Guardar clave</button><button type="button" class="btn-dark btn-small" onclick="$(\'claveBox\').innerHTML=\'\'">Cancelar</button></div><div id="ckMsg"></div></div>';
+  }
+  function guardarMiClave(){
+    var a=$("ck_a").value, n=$("ck_n").value, c=$("ck_c").value;
+    if(!a||!n){ $("ckMsg").innerHTML='<div class="error">Complete la clave actual y la nueva.</div>'; return; }
+    if(n!==c){ $("ckMsg").innerHTML='<div class="error">La confirmación no coincide con la nueva clave.</div>'; return; }
+    $("btnCk").disabled=true;
+    run("cambiarMiClave",[S.token,a,n],function(res){
+      $("btnCk").disabled=false;
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudo cambiar la clave."; if(!errorSesion(m)) $("ckMsg").innerHTML='<div class="error">'+esc(m)+'</div>'; return; }
+      $("claveBox").innerHTML=""; toast("Clave actualizada correctamente.","ok");
+    },function(m){ $("btnCk").disabled=false; $("ckMsg").innerHTML='<div class="error">'+esc(m)+'</div>'; });
+  }
+
+  function renderUsuarios(){
+    $("lista").innerHTML='<div class="hint" style="display:block">Cargando usuarios...</div>';
+    run("listarUsuarios",[S.token],function(res){
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudo cargar la lista."; if(!errorSesion(m)) $("lista").innerHTML='<div class="error">'+esc(m)+'</div>'; return; }
+      var us=res.usuarios||[];
+      var h='<p class="hint" style="display:block">Desde aquí puede <b>asignar o generar una clave nueva</b> a cualquier perfil (el usuario recibe un aviso sin la clave) o <b>ingresar a su panel</b> sin necesitar la clave. Las claves actuales no se pueden consultar: se guardan cifradas.</p>';
+      h+=us.map(function(u,i){
+        var act=String(u.estado).toUpperCase()==="ACTIVO";
+        return '<div class="ec-box" style="background:#fff"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><div><b>'+esc(u.nombre||u.correo)+'</b> · '+esc(NOMBRE_PANEL[u.rol]||u.rol)+'<div class="hint" style="display:block">'+esc(u.correo)+' · '+esc(u.estado)+(u.tieneClave?'':' · sin clave')+'</div></div>'+
+          (act&&u.rol!=="ADMIN"?'<button type="button" class="btn-green btn-small" onclick="entrarComo('+i+')">Ingresar como este perfil</button>':'')+'</div>'+
+          '<div class="edit-grid" style="margin-top:8px"><div><label>Nueva clave</label><input id="uc_'+i+'" type="text" autocomplete="off" placeholder="Mín. 8, letras y números"></div></div>'+
+          '<div class="mini-actions" style="justify-content:flex-start"><button type="button" class="btn-dark btn-small" onclick="fijarClave('+i+',false)">Guardar clave</button><button type="button" class="btn-orange btn-small" onclick="fijarClave('+i+',true)">Generar aleatoria</button></div><div id="um_'+i+'"></div></div>';
+      }).join('');
+      $("lista").innerHTML=h||'<div class="hint" style="display:block">No hay usuarios en la hoja.</div>';
+      S.usuariosLista=us;
+    },function(m){ $("lista").innerHTML='<div class="error">'+esc(m)+'</div>'; });
+  }
+  function fijarClave(i,generar){
+    var u=S.usuariosLista[i], c=val("uc_"+i);
+    if(!generar&&!c){ $("um_"+i).innerHTML='<div class="error">Escriba la nueva clave o use «Generar aleatoria».</div>'; return; }
+    if(!confirm((generar?'Generar una clave aleatoria para ':'Cambiar la clave de ')+u.correo+' ('+u.rol+')?')) return;
+    run("establecerClaveUsuario",[S.token,u.correo,u.rol,c,!!generar],function(res){
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudo cambiar la clave."; if(!errorSesion(m)) $("um_"+i).innerHTML='<div class="error">'+esc(m)+'</div>'; return; }
+      $("um_"+i).innerHTML='<div class="status-card success">Clave actualizada.'+(res.clave?' Nueva clave (se muestra una sola vez): <b style="font-size:16px;user-select:all">'+esc(res.clave)+'</b>':'')+'</div>';
+      var el=$("uc_"+i); if(el) el.value="";
+    },function(m){ $("um_"+i).innerHTML='<div class="error">'+esc(m)+'</div>'; });
+  }
+  function entrarComo(i){
+    var u=S.usuariosLista[i];
+    run("ingresarComoPerfil",[S.token,u.correo,u.rol],function(res){
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudo ingresar al perfil."; if(!errorSesion(m)) toast(m,"err"); return; }
+      S.adminBack={token:S.token,usuario:S.usuario};
+      S.token=res.token; S.usuario={correo:res.correo,nombre:res.nombre,rol:res.rol,area:res.area};
+      S.tab=(res.rol==="ICETEX"?"ICX":"PENDIENTE"); S.busqueda=""; S.estado=""; S.sub="TODAS"; S.sel={}; S.limite=50; S.f={desde:"",hasta:"",estado:"",nivel:"",tipo:""}; S.g={lote:"",pr:"",periodo:""};
+      S.datos=[]; S.resumen=null; S.lotes=[];
+      $("panelContenido").innerHTML=""; cargarPanel();
+    },function(m){ toast(m,"err"); });
+  }
+  function volverAdmin(){
+    var b=S.adminBack; if(!b) return;
+    if(S.token) run("cerrarSesionInterna",[S.token],function(){},function(){});
+    S.token=b.token; S.usuario=b.usuario; S.adminBack=null;
+    S.tab="USUARIOS"; S.busqueda=""; S.estado=""; S.sub="TODAS"; S.sel={}; S.limite=50; S.g={lote:"",pr:"",periodo:""};
+    S.datos=[]; S.resumen=null; S.lotes=[];
+    $("panelContenido").innerHTML=""; cargarPanel();
+  }
+
+  /* ============ PERIODOS Y HOJAS (administrador) ============ */
+  function renderPeriodos(){
+    $("lista").innerHTML='<div class="hint" style="display:block">Cargando periodos...</div>';
+    run("obtenerPeriodos",[S.token],function(res){
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudieron cargar los periodos."; if(!errorSesion(m)) $("lista").innerHTML='<div class="error">'+esc(m)+'</div>'; return; }
+      var act=res.periodos.filter(function(p){ return p.estado==="ACTIVO"; })[0];
+      var h=act?'<div class="per-banner per-ok">Recibiendo solicitudes en el periodo <b>'+esc(act.periodo)+'</b> → hoja «'+esc(act.hoja)+'». Estudiantes y perfil ICETEX guardan aquí.</div>':
+        '<div class="per-banner per-bad"><b>No hay periodo activo:</b> nadie puede radicar nuevas solicitudes hasta activar uno.</div>';
+      h+='<div class="ec-box" style="background:#fff"><h4>Crear nuevo periodo</h4><div class="edit-grid">'+
+        '<div><label>Periodo *</label><input id="np_nom" placeholder="Ej: 2027-1"></div>'+
+        '<div><label>Hoja (opcional)</label><input id="np_hoja" placeholder="Por defecto: Solicitudes 2027-1"></div>'+
+        '<div><label>Desde</label><input id="np_desde" type="date"></div><div><label>Hasta</label><input id="np_hasta" type="date"></div></div>'+
+        '<label style="display:flex;gap:8px;align-items:center;margin-top:8px"><input type="checkbox" id="np_act"> Activarlo ahora (las nuevas solicitudes irán a su hoja)</label>'+
+        '<div class="mini-actions" style="justify-content:flex-start"><button type="button" class="btn-green btn-small" onclick="crearPeriodoUI()">Crear periodo</button></div></div>'+
+        '<p class="hint" style="display:block">Un periodo <b>cerrado</b> deja de recibir solicitudes nuevas, pero sus solicitudes siguen su trámite normal (Jefatura de Financiamiento, Cartera, Control Interno y Tesorería las siguen viendo).</p>';
+      h+=res.periodos.map(function(p){
+        var k=esc(p.periodo);
+        return '<div class="per-row"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center"><div><b style="font-size:15px">'+k+'</b> '+
+          '<span class="badge '+(p.estado==="ACTIVO"?'ok':'')+'">'+(p.estado==="ACTIVO"?'RECIBIENDO':'CERRADO')+'</span> <span class="sub">hoja «'+esc(p.hoja)+'»'+(p.existeHoja?'':' (no existe)')+' · '+p.solicitudes+' solicitud(es)</span></div>'+
+          '<div>'+(p.estado==="ACTIVO"?'<button type="button" class="btn-orange btn-small" onclick="estadoPeriodo(\''+k+'\',\'CERRADO\')">Cerrar recepción</button>':'<button type="button" class="btn-green btn-small" onclick="estadoPeriodo(\''+k+'\',\'ACTIVO\')">Activar para recibir</button>')+'</div></div>'+
+          '<div class="grid-per"><div><label>Desde</label><input type="date" id="pe_d_'+k+'" value="'+esc(p.desdeIso)+'"></div><div><label>Hasta</label><input type="date" id="pe_h_'+k+'" value="'+esc(p.hastaIso)+'"></div>'+
+          '<div><label>Nombre de la hoja</label><input id="pe_s_'+k+'" value="'+esc(p.hoja)+'"></div>'+
+          '<div><button type="button" class="btn-dark btn-small" onclick="guardarPeriodoUI(\''+k+'\')">Guardar cambios</button></div></div></div>';
+      }).join("");
+      $("lista").innerHTML=h;
+    });
+  }
+  function crearPeriodoUI(){
+    var d={periodo:val("np_nom"),hoja:val("np_hoja"),desde:val("np_desde"),hasta:val("np_hasta"),activar:$("np_act").checked};
+    if(!d.periodo){ toast("Escriba el nombre del periodo.","err"); return; }
+    if(d.activar&&!confirm("Se activará el periodo "+d.periodo+" y se cerrará la recepción del periodo actual. ¿Continuar?")) return;
+    run("crearPeriodo",[S.token,d],function(res){
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudo crear."; if(!errorSesion(m)) toast(m,"err"); return; }
+      toast(res.mensaje,"ok"); cargarPanel();
+    });
+  }
+  function estadoPeriodo(p,e){
+    if(!confirm(e==="ACTIVO"?"Activar el periodo "+p+": las nuevas solicitudes se guardarán en su hoja y se cerrará el periodo actual. ¿Continuar?":"Cerrar la recepción del periodo "+p+": nadie podrá radicar hasta activar otro. ¿Continuar?")) return;
+    run("actualizarPeriodo",[S.token,p,{estado:e}],function(res){
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudo actualizar."; if(!errorSesion(m)) toast(m,"err"); return; }
+      toast(res.mensaje,"ok"); cargarPanel();
+    });
+  }
+  function guardarPeriodoUI(p){
+    run("actualizarPeriodo",[S.token,p,{desde:val("pe_d_"+p),hasta:val("pe_h_"+p),hoja:val("pe_s_"+p)}],function(res){
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudo actualizar."; if(!errorSesion(m)) toast(m,"err"); return; }
+      toast(res.mensaje,"ok"); cargarPanel();
+    });
+  }
+  function moverPeriodo(r){
+    var p=val("mv_"+r);
+    if(!p||!confirm("¿Mover la solicitud "+r+" a la hoja del periodo "+p+"?")) return;
+    run("moverSolicitudPeriodo",[S.token,r,p],function(res){
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudo mover."; if(!errorSesion(m)) toast(m,"err"); return; }
+      toast(res.mensaje,"ok"); cargarPanel();
+    });
+  }
+
+  /* ----- ALERTAS POR PLAZO (envío manual) ----- */
+  var PLZ={items:[],sel:{}};
+  function cargarPlazos(){
+    var box=$("dashPlazos"); if(!box) return;
+    box.innerHTML='<div class="alert-box"><div class="hint" style="display:block">Calculando plazos...</div></div>';
+    run("obtenerAlertasPlazos",[S.token],function(res){
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudieron calcular los plazos."; if(!errorSesion(m)) box.innerHTML='<div class="error">'+esc(m)+'</div>'; return; }
+      PLZ.items=res.items; PLZ.reglas=res.plazos; PLZ.sel={};
+      renderPlazos();
+    });
+  }
+  function renderPlazos(){
+    var box=$("dashPlazos"); if(!box) return;
+    var venc=PLZ.items.filter(function(x){ return x.vencida; }).sort(function(a,b){ return b.dias-a.dias; });
+    var reglas=PLZ.reglas.map(function(p){ return esc(p.area)+': '+p.dias+' días'; }).join(' · ');
+    var h='<div class="alert-box plazo"><div class="alert-head"><h4>Alertas por plazo vencido</h4><span class="hint" style="display:inline">Plazos (días calendario en el área): '+reglas+'</span></div>';
+    if(!venc.length){ box.innerHTML=h+'<p class="hint" style="display:block">Ninguna solicitud tiene el plazo vencido. ('+PLZ.items.length+' pendiente(s) en áreas, dentro de plazo).</p></div>'; return; }
+    var porArea={}; venc.forEach(function(x){ (porArea[x.rol]=porArea[x.rol]||{area:x.area,l:[]}).l.push(x); });
+    h+='<p class="hint" style="display:block">El correo <b>no se envía solo</b>: marque las solicitudes y pulse el botón del área (o envíe todas las vencidas).</p>';
+    Object.keys(porArea).forEach(function(rol){
+      var g=porArea[rol];
+      h+='<div class="plazo-area"><div class="plazo-top"><b>'+esc(g.area)+'</b> <span class="chip chip-red">'+g.l.length+' vencida(s)</span>'+
+        '<button type="button" class="btn-orange btn-small" onclick="enviarPlazoArea(\''+rol+'\')">Enviar alerta a '+esc(g.area)+'</button></div>'+
+        '<table class="tbl"><thead><tr><th></th><th>Radicado</th><th>Estudiante</th><th>Valor</th><th>Días / plazo</th><th>Último aviso</th></tr></thead><tbody>'+
+        g.l.map(function(x){
+          return '<tr><td><input type="checkbox" '+(PLZ.sel[x.radicado]===false?'':'checked')+' onchange="marcarPlazo(\''+esc(x.radicado)+'\',this.checked)"></td><td>'+esc(x.radicado)+'</td><td>'+esc(x.nombre)+'</td><td>'+money(x.valor)+'</td><td><b>'+x.dias+'</b> / '+x.plazo+'</td><td>'+(x.ultimaAlerta?esc(x.ultimaAlerta)+' ('+x.nAlertas+')':'—')+'</td></tr>';
+        }).join("")+'</tbody></table></div>';
+    });
+    h+='<div class="mini-actions" style="justify-content:flex-start"><button type="button" class="btn-dark btn-small" onclick="enviarPlazoArea(\'\')">Enviar todas las vencidas marcadas</button></div></div>';
+    box.innerHTML=h;
+  }
+  function marcarPlazo(r,v){ PLZ.sel[r]=v; }
+  function enviarPlazoArea(rol){
+    var rads=PLZ.items.filter(function(x){ return x.vencida&&(!rol||x.rol===rol)&&PLZ.sel[x.radicado]!==false; }).map(function(x){ return x.radicado; });
+    if(!rads.length){ toast("No hay solicitudes marcadas para enviar.","err"); return; }
+    if(!confirm("Se enviará un correo de recordatorio por "+rads.length+" solicitud(es). ¿Continuar?")) return;
+    toast("Enviando alerta...");
+    run("enviarAlertasPlazo",[S.token,rads],function(res){
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudo enviar."; if(!errorSesion(m)) toast(m,"err"); return; }
+      toast(res.mensaje,"ok"); cargarPlazos();
+    });
+  }
+
+  var UMBRAL=5;
+  function cambiarUmbral(){ var v=parseInt(val("dUmbral"),10); UMBRAL=(v>0&&v<60)?v:5; renderAlertas(); }
+  function abrirSolicitud(r){ S.tab="PENDIENTE"; S.busqueda=r; S.estado=""; S.sub="TODAS"; S.limite=50; S.sel={}; renderPanel(); }
+
+  function renderAlertas(){
+    var box=$("dashAlertas"); if(!box) return;
+    var hoy=new Date();
+    var vivas=S.datos.filter(function(s){ var e=up(s["Estado actual"]); return !(e==="PAGO REALIZADO"||e==="FINALIZADA"||e.indexOf("RECHAZADA")===0); });
+    var atrasadas=vivas.map(function(s){ return {s:s,d:diasHab(fechaHora(s["Última actualización"])||fechaDe(s),hoy)}; })
+      .filter(function(x){ return x.d>=UMBRAL; }).sort(function(a,b){ return b.d-a.d; });
+    var sinEC=vivas.filter(function(s){ return up(s["Estado actual"])==="ENVIADA A CARTERA"&&!s["Estado de cuenta PDF"]; }).length;
+    var subs=vivas.filter(function(s){ return up(s["Estado actual"])==="PENDIENTE SUBSANACIÓN"; }).length;
+    var devueltas=vivas.filter(function(s){ return up(s["Estado actual"]).indexOf("DEVUELTA POR")===0; }).length;
+    var porEtapa={}; atrasadas.forEach(function(x){ var e=x.s["Etapa actual"]||"—"; porEtapa[e]=(porEtapa[e]||0)+1; });
+
+    var h='<div class="alert-box"><div class="alert-head"><h4>Requieren atención</h4>'+
+      '<label class="alert-umbral">Sin movimiento hace <input type="number" id="dUmbral" min="1" max="59" value="'+UMBRAL+'" onchange="cambiarUmbral()"> días hábiles o más</label></div>'+
+      '<div class="alert-chips">'+
+        '<span class="chip '+(atrasadas.length?'chip-red':'chip-ok')+'">'+atrasadas.length+' estancada(s)</span>'+
+        '<span class="chip '+(sinEC?'chip-orange':'chip-ok')+'">'+sinEC+' en Cartera sin estado de cuenta</span>'+
+        '<span class="chip '+(devueltas?'chip-orange':'chip-ok')+'">'+devueltas+' devuelta(s) a Financiamiento</span>'+
+        '<span class="chip '+(subs?'chip-orange':'chip-ok')+'">'+subs+' esperando subsanación</span>'+
+        Object.keys(porEtapa).map(function(k){ return '<span class="chip">'+esc(k)+': '+porEtapa[k]+'</span>'; }).join("")+
+      '</div>';
+    if(atrasadas.length){
+      h+='<table class="tbl"><thead><tr><th>Radicado</th><th>Estudiante</th><th>Etapa</th><th>Estado</th><th>Días sin movimiento</th><th></th></tr></thead><tbody>'+
+        atrasadas.slice(0,15).map(function(x){
+          return '<tr><td>'+esc(x.s["Radicado"])+'</td><td>'+esc(x.s["Nombre estudiante"])+'</td><td>'+esc(x.s["Etapa actual"])+'</td><td>'+esc(x.s["Estado actual"])+'</td><td><b>'+x.d+'</b></td>'+
+            '<td><button type="button" class="btn-dark btn-small" onclick="abrirSolicitud(\''+esc(x.s["Radicado"])+'\')">Abrir</button></td></tr>';
+        }).join("")+'</tbody></table>'+(atrasadas.length>15?'<p class="hint" style="display:block">Se muestran las 15 más antiguas de '+atrasadas.length+'.</p>':'');
+    } else h+='<p class="hint" style="display:block">Ninguna solicitud supera el umbral. 👍</p>';
+    box.innerHTML=h+'</div>';
+  }
+
+  function tiemposPorEtapa(L){
+    var tramos=[["Financiamiento → Jefatura de Financiamiento","Fecha solicitud","Fecha envío Jefatura"],["Jefatura de Financiamiento","Fecha envío Jefatura","Fecha envío Cartera"],["Cartera","Fecha envío Cartera","Fecha envío Control Interno"],["Control Interno","Fecha envío Control Interno","Fecha envío Tesorería"],["Tesorería","Fecha envío Tesorería","Fecha pago"]];
+    return tramos.map(function(t){
+      var suma=0,n=0;
+      L.forEach(function(s){ var a=fechaHora(s[t[1]]), b=fechaHora(s[t[2]]); if(a&&b&&b>=a){ suma+=diasHab(a,b); n++; } });
+      return {nombre:t[0],prom:n?Math.round(suma/n*10)/10:0,n:n};
+    });
+  }
+
+  function actualizarDash(){
+    var L=datosDash();
+    renderAlertas();
+    var sol=0,apr=0,pag=0,dias=0,nd=0;
+    L.forEach(function(s){
+      sol+=num(s["Valor solicitado"]);
+      if(up(s["Decisión Financiamiento"])==="APROBADA") apr+=num(s["Valor aprobado"]);
+      var e=up(s["Estado actual"]); if(e==="PAGO REALIZADO"||e==="FINALIZADA") pag+=num(s["Valor aprobado"]);
+      if(s["Días en proceso"]!==undefined&&s["Días en proceso"]!==""){ dias+=num(s["Días en proceso"]); nd++; }
+    });
+    $("dashKpis").innerHTML='<div class="metrics m6">'+
+      '<div class="metric"><strong>'+L.length+'</strong><span>Solicitudes</span></div>'+
+      '<div class="metric money-m"><strong>'+money(sol)+'</strong><span>Valor solicitado</span></div>'+
+      '<div class="metric money-m"><strong>'+money(apr)+'</strong><span>Valor aprobado</span></div>'+
+      '<div class="metric money-m"><strong>'+money(pag)+'</strong><span>Valor pagado</span></div>'+
+      '<div class="metric money-m"><strong>'+money(Math.max(apr-pag,0))+'</strong><span>Por pagar</span></div>'+
+      '<div class="metric"><strong>'+(nd?(Math.round(dias/nd*10)/10):0)+'</strong><span>Prom. días hábiles</span></div></div>';
+
+    var porEstado=agrupar(L,function(s){ return s["Estado actual"]; });
+    var ke=Object.keys(porEstado);
+    grafico("chEstado","doughnut",ke,[{data:ke.map(function(k){ return porEstado[k].n; }),backgroundColor:PALETA}]);
+
+    var porEtapa=agrupar(L,function(s){ return s["Etapa actual"]; });
+    var keta=ETAPAS.filter(function(e){ return porEtapa[e]; });
+    grafico("chEtapa","bar",keta,[{label:"Solicitudes",data:keta.map(function(k){ return porEtapa[k].n; }),backgroundColor:"#41B6FF"}],{scales:{y:{beginAtZero:true,ticks:{precision:0}}}});
+
+    var porMes=agrupar(L,function(s){ var m=/^(\d{2})\/(\d{2})\/(\d{4})/.exec(s["Fecha solicitud"]||""); return m?m[3]+"-"+m[2]:""; });
+    var km=Object.keys(porMes).sort();
+    grafico("chMes","bar",km,[{label:"Solicitudes",data:km.map(function(k){ return porMes[k].n; }),backgroundColor:"#07043B"}],{scales:{y:{beginAtZero:true,ticks:{precision:0}}}});
+
+    var porPer=agrupar(L,function(s){ return s["Periodo"]; });
+    var kp=Object.keys(porPer).sort();
+    grafico("chPeriodo","bar",kp,[
+      {label:"Solicitado",data:kp.map(function(k){ return porPer[k].sol; }),backgroundColor:"#41B6FF"},
+      {label:"Aprobado",data:kp.map(function(k){ return porPer[k].apr; }),backgroundColor:"#FF9824"},
+      {label:"Pagado",data:kp.map(function(k){ return porPer[k].pag; }),backgroundColor:"#2EA44F"}
+    ],{scales:{y:{beginAtZero:true,ticks:{callback:function(v){ return "$"+(v/1000000).toFixed(1)+"M"; }}}}});
+
+    var porRec=agrupar(L,function(s){ return s["Periodo recepción"]; });
+    var kr=Object.keys(porRec).sort();
+    grafico("chRecepcion","bar",kr.map(function(k){ return k+" ("+porRec[k].n+")"; }),[
+      {label:"Solicitado",data:kr.map(function(k){ return porRec[k].sol; }),backgroundColor:"#41B6FF"},
+      {label:"Aprobado",data:kr.map(function(k){ return porRec[k].apr; }),backgroundColor:"#FF9824"},
+      {label:"Pagado",data:kr.map(function(k){ return porRec[k].pag; }),backgroundColor:"#2EA44F"}
+    ],{scales:{y:{beginAtZero:true,ticks:{callback:function(v){ return "$"+(v/1000000).toFixed(1)+"M"; }}}}});
+
+    var porProg=agrupar(L,function(s){ return s["Programa"]; });
+    var kpr=Object.keys(porProg).sort(function(a,b){ return porProg[b].n-porProg[a].n; }).slice(0,8);
+    var tp=tiemposPorEtapa(L);
+    grafico("chTiempos","bar",tp.map(function(t){ return t.nombre+" ("+t.n+")"; }),[{label:"Días hábiles promedio",data:tp.map(function(t){ return t.prom; }),backgroundColor:"#FF9824"}],{scales:{y:{beginAtZero:true}}});
+    grafico("chPrograma","bar",kpr.map(function(k){ return k.length>34?k.substr(0,34)+"…":k; }),[{label:"Solicitudes",data:kpr.map(function(k){ return porProg[k].n; }),backgroundColor:"#00579D"}],{indexAxis:"y",scales:{x:{beginAtZero:true,ticks:{precision:0}}}});
+
+    var porMot=agrupar(L,function(s){ return s["Motivo solicitud"]; });
+    var kmo=Object.keys(porMot).sort(function(a,b){ return porMot[b].n-porMot[a].n; });
+    grafico("chMotivo","bar",kmo,[{label:"Solicitudes",data:kmo.map(function(k){ return porMot[k].n; }),backgroundColor:"#FF9824"}],{indexAxis:"y",scales:{x:{beginAtZero:true,ticks:{precision:0}}}});
+
+    var filas=L.slice(0,100).map(function(s){
+      return '<tr><td><b>'+esc(s["Radicado"])+'</b></td><td>'+esc(s["Fecha solicitud"])+'</td><td>'+esc(s["Nombre estudiante"])+'</td><td>'+esc(s["Programa"])+'</td><td>'+esc(s["Periodo"])+'</td><td>'+esc(s["Estado actual"])+'</td><td>'+(num(s["Valor solicitado"])?money(num(s["Valor solicitado"])):"")+'</td><td>'+(num(s["Valor aprobado"])?money(num(s["Valor aprobado"])):"")+'</td></tr>';
+    }).join("");
+    $("dashTabla").innerHTML='<div class="hint" style="margin:6px 0">'+L.length+' resultado(s)'+(L.length>100?' — se muestran los primeros 100; el Excel incluye todos':'')+'</div>'+
+      '<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>Radicado</th><th>Fecha</th><th>Estudiante</th><th>Programa</th><th>Periodo</th><th>Estado</th><th>Solicitado</th><th>Aprobado</th></tr></thead><tbody>'+(filas||'<tr><td colspan="8" class="empty-panel">Sin resultados con estos filtros.</td></tr>')+'</tbody></table></div>';
+  }
+
+  function descargarReporte(){
+    var f=S.f;
+    $("btnReporte").disabled=true; toast("Generando el Excel... puede tardar unos segundos.");
+    run("generarReporteExcel",[S.token,{desde:f.desde,hasta:f.hasta,periodos:S.g.periodo?[S.g.periodo]:[],estados:f.estado?[f.estado]:[],nivel:f.nivel,periodoRecepcion:S.g.pr,lote:S.g.lote,tipo:f.tipo}],function(res){
+      $("btnReporte").disabled=false;
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudo generar el reporte."; if(!errorSesion(m)) toast(m,"err"); return; }
+      descargarBase64(res.nombre,res.base64,res.mime);
+      toast("Reporte descargado ("+res.total+" solicitudes).","ok");
+    },function(m){ $("btnReporte").disabled=false; if(!errorSesion(m)) toast(m,"err"); });
+  }
+
+  /* ============ DETALLE + FORMATO F AF 041 ============ */
+  function toggleDetalle(r){
+    var it=$("it_"+r), body=$("body_"+r);
+    if(!it) return;
+    if(!it.classList.contains("open") && !body.innerHTML){
+      var s=S.datos.filter(function(x){ return x["Radicado"]===r; })[0];
+      body.innerHTML=detalleHtml(s);
+    }
+    it.classList.toggle("open");
+  }
+
+  function campo(label,v){ return '<div><b>'+esc(label)+':</b><br>'+esc(v||"—")+'</div>'; }
+
+  function estBloque(s,colEstado,etapa,okVal){
+    var e=up(s[colEstado]||"");
+    if(e===(okVal||"APROBADA")) return "completo";
+    if(norm(s["Etapa actual"])===norm(etapa)&&!esFinalS(s)) return "curso";
+    if(e==="DEVUELTA CON NOVEDAD") return "devuelto";
+    return "pendiente";
+  }
+
+  function formatoHtml(s){
+    var sol=num(s["Valor solicitado"]), pct=num(s["Porcentaje devolución"]);
+    var apr=num(s["Valor aprobado"])||(sol&&pct?Math.round(sol*pct/100):0);
+    var revisado=!!s["Fecha revisión Financiamiento"];
+    var bFin=revisado?"completo":(norm(s["Etapa actual"])==="financiamiento"&&!esFinalS(s)?"curso":"pendiente");
+    var finDev=up(s["Estado actual"]).indexOf("RECHAZADA")===0;
+    if(finDev) bFin="devuelto";
+    var bJef=estBloque(s,"Estado Jefatura","JEFATURA FINANCIAMIENTO");
+    var bCar=estBloque(s,"Estado Cartera","CARTERA");
+    var bCI=estBloque(s,"Estado Control Interno","CONTROL INTERNO");
+    var bTes=estBloque(s,"Estado Tesorería","TESORERÍA","PAGO REALIZADO");
+    var etiqueta={completo:"Completado",curso:"En curso",devuelto:"Devuelto / rechazado",pendiente:"Pendiente"};
+
+    function row(l,v){ var vac=(v===undefined||v===null||v==="")?'<span class="vacio">—</span>':esc(v); return '<div class="fmt-row"><div>'+esc(l)+'</div><div>'+vac+'</div></div>'; }
+    function ver(v){ var t=up(v); if(t==="OK") return "✔ OK"; if(t==="NO") return "✖ NO"; return ""; }
+    function sec(titulo,estado,cuerpo){ return '<div class="fmt-sec '+(estado==="pendiente"?'pendiente':'')+'"><div class="fmt-title"><span>'+esc(titulo)+'</span><span class="pill '+estado+'">'+etiqueta[estado]+'</span></div>'+cuerpo+'</div>'; }
+    function area(titulo,estado,fechaLbl,fecha,func,vobo,obs){
+      return sec(titulo,estado,row(fechaLbl,fecha)+row("Funcionario que recibe",func)+(vobo!==null?row("Vo.Bo.",vobo):"")+row("Observaciones",obs));
+    }
+
+    return '<div class="fmt">'+
+      '<div class="fmt-head"><b>Seguimiento a devoluciones</b><small>CÓDIGO: F AF 041<br>FECHA: 18/11/2024 · VERSIÓN: 1.0</small></div>'+
+      sec("Información inicial",bFin,
+        row("Estudiante",s["Nombre estudiante"])+row("No. Documento",s["Documento estudiante"])+row("Fecha de recepción de documentos",s["Fecha solicitud"])+
+        row("Fecha de revisión de documentos",s["Fecha revisión Financiamiento"])+row("Funcionario que recibe",s["Funcionario Financiamiento"]))+
+      sec("Información de la devolución",bFin,
+        row("Periodo",s["Periodo"])+row("Valor de la solicitud de devolución",sol?money(sol):"")+row("% Devolución",pct?pct+"%":"")+row("Valor a devolver",apr?money(apr):"")+
+        row("Motivo de la devolución",s["Motivo solicitud"])+row("Artículo del reglamento",s["Artículo aplicado"])+row("Devolver a",s["Devolver a"]))+
+      sec("Verificación de documentos",bFin,
+        row("Carta de solicitud",ver(s["Carta solicitud incluida"]))+row("Fotocopia de documento de identidad",ver(s["Documento identidad incluido"]))+
+        row("Comprobante de pago",ver(s["Soporte pago incluido"]))+row("Certificado bancario",ver(s["Certificación bancaria incluida"]))+row("Observaciones",s["Observación Financiamiento"]))+
+      '<div class="fmt-sub">Recepción áreas involucradas en el proceso</div>'+
+      area("Jefe de Financiamiento",bJef,"Fecha de recepción",s["Fecha envío Jefatura"],s["Funcionario Jefatura"],s["Firma Jefatura"],s["Observación Jefatura"])+
+      area("Cartera",bCar,"Fecha de recepción en Cartera",s["Fecha envío Cartera"],s["Funcionario Cartera"],null,s["Observación Cartera"])+
+      area("Control Interno",bCI,"Fecha de recepción en Control Interno",s["Fecha envío Control Interno"],s["Funcionario Control Interno"],null,s["Observación Control Interno"])+
+      area("Tesorería",bTes,"Fecha de recepción en Tesorería",s["Fecha envío Tesorería"],s["Funcionario Tesorería"],null,s["Observación Tesorería"])+
+      sec("Cierre",up(s["Estado actual"])==="PAGO REALIZADO"||up(s["Estado actual"])==="FINALIZADA"?"completo":"pendiente",
+        row("Fecha devolución al estudiante",s["Fecha pago"])+row("Total de días en el proceso de devolución",s["Días en proceso"]?s["Días en proceso"]+" días hábiles":""))+
+    '</div>';
+  }
+
+  function detalleHtml(s){
+    var r=s["Radicado"], rol=S.usuario.rol;
+    var obs="";
+    [["Financiamiento","Observación Financiamiento"],["Jefatura de Financiamiento","Observación Jefatura"],["Cartera","Observación Cartera"],["Control Interno","Observación Control Interno"],["Tesorería","Observación Tesorería"],["Comentario del estudiante (subsanación)","Comentario subsanación"]].forEach(function(o){
+      if(s[o[1]]) obs+='<div class="obs-box"><b>'+esc(o[0])+':</b> '+esc(s[o[1]])+'</div>';
+    });
+
+    var html='<div class="grid2">'+
+      campo("Documento",s["Documento estudiante"])+campo("Correo",s["Correo estudiante"])+campo("Celular",s["Celular estudiante"])+
+      campo("Nivel",s["Nivel"])+campo("Modalidad",s["Modalidad"])+campo("Periodo",s["Periodo"])+
+      '<div class="full">'+campo("Programa",s["Programa"])+'</div>'+
+      campo("Motivo",s["Motivo solicitud"])+campo("Etapa actual",s["Etapa actual"])+campo("Responsable",s["Responsable actual"])+
+      '<div class="full">'+campo("Descripción",s["Descripción solicitud"])+'</div>'+
+    '</div>'+obs+
+    '<div class="links"><button type="button" class="btn-dark btn-small" onclick="verArchivo(\''+esc(r)+'\',\'SOPORTE\')">'+(s["Tipo solicitud"]==="ICETEX"?'Ver soporte de correo':'Ver PDF de soportes')+'</button>'+
+      (s["Cálculo devolución ICETEX"]?'<button type="button" class="btn-dark btn-small" onclick="verArchivo(\''+esc(r)+'\',\'CALCULO_ICETEX\')">Ver cálculo ICETEX</button>':'')+
+      '<button type="button" class="btn-green btn-small" onclick="verHistorial(\''+esc(r)+'\')">Ver historial</button>'+
+      '<button type="button" class="btn-green btn-small" onclick="descargarFormato(\''+esc(r)+'\',\'XLSX\')">Descargar formato (Excel)</button>'+
+      '<button type="button" class="btn-green btn-small" onclick="descargarFormato(\''+esc(r)+'\',\'PDF\')">Descargar formato (PDF)</button></div>'+
+    '<div id="hist_'+esc(r)+'"></div>'+
+    estadoCuentaHtml(s)+
+    comprobanteHtml(s)+
+    '<details class="formato" open><summary>Formato de seguimiento F AF 041 (se completa a medida que avanza el trámite)</summary>'+formatoHtml(s)+'</details>'+
+    accionesHtml(s);
+
+    if(rol==="ADMIN") html+=editarHtml(s);
+    return html;
+  }
+
+  /* ----- ESTADO DE CUENTA (Cartera) Y COMENTARIOS ----- */
+  var archivosEC={};
+  function estadoCuentaHtml(s){
+    var r=esc(s["Radicado"]), rol=S.usuario.rol, tiene=!!s["Estado de cuenta PDF"];
+    var enCartera=up(s["Estado actual"])==="ENVIADA A CARTERA";
+    var puedeSubir=(rol==="ADMIN")||(rol==="CARTERA"&&enCartera);
+    var h='<div class="ec-box"><h4>Estado de cuenta del estudiante (Cartera)</h4>';
+    if(tiene){
+      h+='<p class="hint" style="display:block">Adjunto'+(s["Fecha estado de cuenta"]?' el '+esc(s["Fecha estado de cuenta"]):'')+(s["Funcionario estado de cuenta"]?' por '+esc(s["Funcionario estado de cuenta"]):'')+'.</p>'+
+        '<button type="button" class="btn-dark btn-small" onclick="verArchivo(\''+r+'\',\'ESTADO_CUENTA\')">Ver estado de cuenta</button> ';
+    } else {
+      h+='<p class="hint" style="display:block">Aún no se ha adjuntado el estado de cuenta.'+(rol==="CARTERA"?' <b>Es obligatorio para aprobar.</b>':'')+'</p>';
+    }
+    if(puedeSubir){
+      h+='<div class="ec-form"><label>'+(tiene?'Reemplazar estado de cuenta (PDF)':'Adjuntar estado de cuenta (PDF)')+'</label>'+
+        '<input type="file" id="ecf_'+r+'" accept="application/pdf,.pdf">'+
+        '<label>Comentario sobre el estado de cuenta (opcional)</label>'+
+        '<textarea id="ecc_'+r+'" placeholder="Ej: saldo a favor, pagos aplicados, novedades..."></textarea>'+
+        '<button type="button" class="btn-green btn-small" onclick="guardarEstadoCuenta(\''+r+'\')">Guardar estado de cuenta</button></div>';
+    }
+    h+='<div style="margin-top:10px"><button type="button" class="btn-green btn-small" onclick="cargarComentarios(\''+r+'\')">Comentarios</button></div><div id="com_'+r+'"></div></div>';
+    return h;
+  }
+
+  /* ----- COMPROBANTE DE PAGO (Tesorería) ----- */
+  function comprobanteHtml(s){
+    var rol=S.usuario.rol, e=up(s["Estado actual"]);
+    if(rol!=="TESORERIA"&&rol!=="ADMIN") return "";
+    var enTes=(e==="ENVIADA A TESORERÍA"||e==="PAGO PROGRAMADO"), tiene=!!s["Comprobante pago"], fin=(e==="PAGO REALIZADO"||e==="FINALIZADA");
+    if(!enTes&&!tiene&&!(rol==="ADMIN"&&fin)) return "";
+    var r=esc(s["Radicado"]), icx=s["Tipo solicitud"]==="ICETEX";
+    var h='<div class="ec-box"><h4>Comprobante de pago (Tesorería)</h4>';
+    if(tiene) h+='<p class="hint" style="display:block">Cargado'+(s["Fecha comprobante pago"]?' el '+esc(s["Fecha comprobante pago"]):'')+(s["Funcionario comprobante pago"]?' por '+esc(s["Funcionario comprobante pago"]):'')+'.</p>'+
+      '<button type="button" class="btn-dark btn-small" onclick="verArchivo(\''+r+'\',\'COMPROBANTE_PAGO\')">Ver comprobante</button> ';
+    else h+='<p class="hint" style="display:block;color:#B42318"><b>Falta el comprobante de pago.</b> Es obligatorio para marcar el pago como realizado.</p>';
+    if(enTes||rol==="ADMIN"){
+      h+='<div class="ec-form"><label>'+(tiene?'Reemplazar comprobante (PDF)':'Adjuntar comprobante de pago (PDF)')+'</label>'+
+        '<input type="file" id="cpf_'+r+'" accept="application/pdf,.pdf">'+
+        '<button type="button" class="btn-green btn-small" onclick="guardarComprobante(\''+r+'\')">Guardar comprobante</button>'+
+        '<p class="hint" style="display:block">'+(icx?'Al marcar el pago como realizado se registra el cierre; el comprobante se envía a Financiamiento como trazabilidad.':'Al marcar el pago como realizado, el estudiante recibe un correo desde Devoluciones con este comprobante adjunto indicando que el proceso finalizó.')+'</p></div>';
+    }
+    if(rol==="ADMIN"&&enTes){
+      h+='<div class="ec-form" style="margin-top:8px;border-top:1px dashed var(--borde);padding-top:8px"><p class="hint" style="display:block"><b>Cerrar el proceso como administrador:</b> si Tesorería no cargó el soporte, adjunte el PDF arriba (o use el ya cargado) y cierre. La solicitud pasa a «Pago realizado / Finalizada»'+(icx?'.':' y el estudiante recibe el correo con el comprobante.')+'</p>'+
+        '<button type="button" class="btn-orange btn-small" onclick="cerrarProceso(\''+r+'\','+(tiene?'true':'false')+')">Cerrar proceso'+(icx?'':' y enviar al estudiante')+'</button></div>';
+    }
+    if(rol==="ADMIN"&&fin&&s["Tipo solicitud"]!=="ICETEX"){
+      h+='<div class="ec-form" style="margin-top:8px"><p class="hint" style="display:block">'+(s["Fecha envío comprobante"]?'Último envío al estudiante: <b>'+esc(s["Fecha envío comprobante"])+'</b>. ':'Aún no se ha enviado al estudiante desde el administrador. ')+'Se envía a <b>'+esc(s["Correo estudiante"]||"—")+'</b> desde el correo de Devoluciones.</p>'+
+        '<button type="button" class="btn-green btn-small" '+(tiene?'':'disabled title="Primero cargue el comprobante"')+' onclick="enviarComprobante(\''+r+'\')">'+(s["Fecha envío comprobante"]?'Reenviar comprobante al estudiante':'Enviar comprobante al estudiante')+'</button></div>';
+    }
+    return h+'</div>';
+  }
+
+  function cerrarProceso(r,yaTiene){
+    var f=$("cpf_"+r), s=S.datos.filter(function(x){ return x["Radicado"]===r; })[0]||{};
+    var hayArchivo=f&&f.files&&f.files[0];
+    if(!hayArchivo&&!yaTiene){ toast("Adjunte el PDF del comprobante de pago para cerrar el proceso.","err"); return; }
+    var dest=s["Tipo solicitud"]==="ICETEX"?"":" y se enviará el comprobante a "+(s["Correo estudiante"]||"el estudiante");
+    if(!confirm("¿Cerrar el proceso de "+r+" sin gestión de Tesorería?\n\nLa solicitud quedará FINALIZADA"+dest+(hayArchivo?"\nSe usará el PDF que acaba de seleccionar.":"\nSe usará el comprobante ya cargado.")+"\n\nEsta acción queda registrada en el historial.")) return;
+    function enviar(a){
+      toast("Cerrando proceso...");
+      run("cerrarProcesoAdmin",[S.token,r,a||null],function(res){
+        if(!res||!res.success){ var m=(res&&res.error)||"No se pudo cerrar."; if(!errorSesion(m)) toast(m,"err"); return; }
+        toast(res.mensaje,"ok"); cargarPanel(true);
+      });
+    }
+    if(hayArchivo) leerPdf(f,null,function(a){ if(a) enviar(a); }); else enviar(null);
+  }
+
+  function enviarComprobante(r){
+    var s=S.datos.filter(function(x){ return x["Radicado"]===r; })[0]||{};
+    if(!confirm("¿Enviar el comprobante de pago de "+r+" a "+(s["Correo estudiante"]||"el estudiante")+"?\n\nEl correo indicará que el proceso finalizó y llevará el PDF adjunto.")) return;
+    toast("Enviando comprobante...");
+    run("enviarComprobanteEstudiante",[S.token,r],function(res){
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudo enviar."; if(!errorSesion(m)) toast(m,"err"); return; }
+      toast(res.mensaje,"ok"); cargarPanel(true);
+    });
+  }
+
+  function guardarComprobante(r){
+    var f=$("cpf_"+r);
+    if(!f||!f.files[0]){ toast("Seleccione el PDF del comprobante de pago.","err"); return; }
+    leerPdf(f,null,function(a){
+      if(!a) return;
+      toast("Guardando comprobante...");
+      run("subirComprobantePago",[S.token,r,a],function(res){
+        if(!res||!res.success){ var m=(res&&res.error)||"No se pudo guardar."; if(!errorSesion(m)) toast(m,"err"); return; }
+        toast(res.mensaje,"ok"); cargarPanel(true);
+      });
+    });
+  }
+
+  function guardarEstadoCuenta(r){
+    var f=$("ecf_"+r), com=($("ecc_"+r).value||"").trim();
+    if(!f.files[0]){ toast("Seleccione el PDF del estado de cuenta.","err"); return; }
+    leerPdf(f,null,function(a){
+      if(!a) return;
+      toast("Guardando estado de cuenta...");
+      run("subirEstadoCuenta",[S.token,r,a,com],function(res){
+        if(!res||!res.success){ var m=(res&&res.error)||"No se pudo guardar."; if(!errorSesion(m)) toast(m,"err"); return; }
+        toast(res.mensaje,"ok");
+        cargarPanel(true);
+      });
+    });
+  }
+
+  function cargarComentarios(r){
+    var box=$("com_"+r);
+    box.innerHTML='<div class="hint" style="display:block">Cargando comentarios...</div>';
+    run("obtenerComentarios",[S.token,r],function(res){
+      if(!res||!res.success){ box.innerHTML='<div class="error">'+esc((res&&res.error)||"No se pudo cargar.")+'</div>'; return; }
+      var lista=res.comentarios.length?res.comentarios.map(function(x){
+        return '<div class="com-item"><b>'+esc(x.funcionario)+'</b> <span class="com-rol">'+esc(x.rol)+'</span> <span class="hint" style="display:inline">'+esc(x.fecha)+' '+esc(x.hora)+'</span><div>'+esc(x.comentario).replace(/\n/g,"<br>")+'</div></div>';
+      }).join(""):'<div class="hint" style="display:block">Aún no hay comentarios.</div>';
+      box.innerHTML=lista+'<textarea id="cn_'+r+'" placeholder="Escribir un comentario (visible para los perfiles internos)"></textarea>'+
+        '<button type="button" class="btn-dark btn-small" onclick="enviarComentario(\''+r+'\')">Publicar comentario</button>';
+    });
+  }
+
+  function enviarComentario(r){
+    var t=($("cn_"+r).value||"").trim();
+    if(!t){ toast("Escriba el comentario.","err"); return; }
+    run("agregarComentario",[S.token,r,t],function(res){
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudo guardar."; if(!errorSesion(m)) toast(m,"err"); return; }
+      toast(res.mensaje,"ok"); cargarComentarios(r);
+    });
+  }
+
+  function icetexCorregirHtml(s){
+    if(s["Etapa actual"]!=="ICETEX") return "";
+    var r=esc(s["Radicado"]);
+    return '<div class="acciones"><div class="obs-box" style="margin-top:0"><b>Devuelta para corrección:</b> '+esc(s["Estado actual"])+'. Revise la observación del área, corrija y reenvíe ('+(up(s["Estado actual"])==="DEVUELTA POR CARTERA"?'directo a <b>Cartera</b>, sin pasar por Jefatura de Financiamiento':'a Jefatura de Financiamiento')+').</div>'+
+      '<div class="edit-grid">'+
+        '<div><label>Documento</label><input id="ic_doc_'+r+'" value="'+esc(s["Documento estudiante"]||"")+'"></div>'+
+        '<div><label>Nombre</label><input id="ic_nom_'+r+'" value="'+esc(s["Nombre estudiante"]||"")+'"></div>'+
+        '<div><label>Periodo académico</label><input id="ic_per_'+r+'" value="'+esc(s["Periodo"]||"")+'"></div>'+
+        '<div><label>Valor a devolver a ICETEX</label><input type="number" min="0" id="ic_val_'+r+'" value="'+esc(s["Valor solicitado"]||"")+'"></div>'+
+        '<div class="full"><label>Observación de la solicitud</label><textarea id="ic_desc_'+r+'">'+esc(s["Descripción solicitud"]||"")+'</textarea></div>'+
+        '<div><label>Reemplazar soporte de correo (PDF, opcional)</label><input type="file" id="ic_f1_'+r+'" accept="application/pdf,.pdf" onchange="icArchivo(\''+r+'\',\'correo\',this)"></div>'+
+        '<div><label>Reemplazar cálculo ICETEX (PDF, opcional)</label><input type="file" id="ic_f2_'+r+'" accept="application/pdf,.pdf" onchange="icArchivo(\''+r+'\',\'calculo\',this)"></div>'+
+      '</div><label>Nota para el área que recibe (opcional)</label><textarea id="obs_'+r+'" placeholder="Qué se corrigió"></textarea>'+
+      '<div class="mini-actions" style="justify-content:flex-start"><button type="button" class="btn-dark btn-small" onclick="icGuardar(\''+r+'\',false)">Guardar correcciones</button>'+
+      '<button type="button" class="btn-green btn-small" onclick="icGuardar(\''+r+'\',true)">Guardar y reenviar a '+(up(s["Estado actual"])==="DEVUELTA POR CARTERA"?'Cartera':'Jefatura de Financiamiento')+'</button></div></div>';
+  }
+  var icArchivos={};
+  function icArchivo(r,k,input){ leerPdf(input,null,function(a){ (icArchivos[r]=icArchivos[r]||{})[k]=a; }); }
+  function icGuardar(r,reenviar){
+    var s=S.datos.filter(function(x){ return x["Radicado"]===r; })[0]||{};
+    var nuevos={"Documento estudiante":val("ic_doc_"+r),"Nombre estudiante":val("ic_nom_"+r),"Periodo":val("ic_per_"+r),"Valor solicitado":val("ic_val_"+r),"Descripción solicitud":val("ic_desc_"+r)};
+    var cambios={}; Object.keys(nuevos).forEach(function(k){ if(String(nuevos[k]).trim()!==String(s[k]||"").trim()) cambios[k]=nuevos[k]; });
+    var a=icArchivos[r]||{};
+    var hay=Object.keys(cambios).length||a.correo||a.calculo;
+    var obs=val("obs_"+r);
+    function reenvio(){ ejecutar([r],"REENVIAR_JEFATURA",obs,{},""); }
+    if(!hay){ if(reenviar) reenvio(); else toast("No hay cambios por guardar."); return; }
+    toast("Guardando correcciones...");
+    run("actualizarSolicitudIcetex",[S.token,r,cambios,a.correo||null,a.calculo||null],function(res){
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudo guardar."; if(!errorSesion(m)) toast(m,"err"); return; }
+      icArchivos[r]={};
+      if(reenviar){ reenvio(); } else { toast(res.mensaje,"ok"); cargarPanel(); }
+    });
+  }
+
+  function accionesHtml(s){
+    if(S.usuario.rol==="ICETEX") return icetexCorregirHtml(s);
+    if(s._cat.indexOf("PENDIENTE")<0) return "";
+    var rol=S.usuario.rol, e=s["Estado actual"], r=esc(s["Radicado"]), b="", extra="";
+
+    if(rol==="ADMIN"){
+      if(e==="PENDIENTE SUBSANACIÓN"){
+        b='<button type="button" class="btn-red btn-small" onclick="accionUna(\''+r+'\',\'RECHAZAR_FINANCIAMIENTO\')">Rechazar</button>';
+        extra='<p class="hint">Esperando que el estudiante cargue la subsanación.</p>';
+      } else if(e==="DEVUELTA POR CARTERA"){
+        b='<button type="button" class="btn-green btn-small" onclick="accionUna(\''+r+'\',\'REENVIAR_CARTERA\')">Reenviar a Cartera</button>'+
+          '<button type="button" class="btn-orange btn-small" onclick="accionUna(\''+r+'\',\'SUBSANACION\')">Solicitar subsanación</button>'+
+          '<button type="button" class="btn-red btn-small" onclick="accionUna(\''+r+'\',\'RECHAZAR_FINANCIAMIENTO\')">Rechazar</button>';
+        extra='<div class="obs-box" style="margin-top:0"><b>Devuelta por Cartera:</b> '+esc(s["Observación Cartera"]||"Sin observación")+'</div>'+
+          '<p class="hint" style="display:block">Corrija lo necesario (use «Editar expediente y archivos» más abajo) y reenvíe. Vuelve <b>directamente a Cartera</b>; no pasa de nuevo por Jefatura de Financiamiento.</p>';
+      } else if(e==="APROBADA FINANCIAMIENTO"){
+        b='<button type="button" class="btn-green btn-small" onclick="accionUna(\''+r+'\',\'ENVIAR_JEFATURA\')">Enviar a Jefatura de Financiamiento (individual)</button>'+
+          '<button type="button" class="btn-orange btn-small" onclick="accionUna(\''+r+'\',\'SUBSANACION\')">Solicitar subsanación</button>'+
+          '<button type="button" class="btn-red btn-small" onclick="accionUna(\''+r+'\',\'RECHAZAR_FINANCIAMIENTO\')">Rechazar</button>';
+        extra='<p class="hint">Para enviar varias en lote, marque la casilla de cada solicitud en la lista.</p>';
+      } else {
+        function vsel(id,v){ var cur=VERIF.indexOf(up(v))>=0&&up(v)!=="PENDIENTE VALIDAR"?up(v):"OK"; return '<select id="'+id+'_'+r+'"><option'+(cur==="OK"?' selected':'')+'>OK</option><option'+(cur==="NO"?' selected':'')+'>NO</option></select>'; }
+        extra='<div class="ap-grid">'+
+          '<div><label>Valor solicitado *</label><input type="number" min="0" id="ap_valor_'+r+'" value="'+esc(s["Valor solicitado"]||"")+'"></div>'+
+          '<div><label>Devolver a *</label><select id="ap_dev_'+r+'">'+["","ESTUDIANTE","ACUDIENTE","TERCERO AUTORIZADO","ICETEX"].map(function(o){ return '<option'+(s["Devolver a"]===o?' selected':'')+' value="'+o+'">'+(o||"Seleccione...")+'</option>'; }).join("")+'</select></div>'+
+          '<div><label>% devolución</label><input type="number" min="0" max="100" id="ap_pct_'+r+'" value="'+esc(s["Porcentaje devolución"]||"100")+'"></div>'+
+          '<div><label>Valor aprobado</label><input type="number" min="0" id="ap_apr_'+r+'" value="'+esc(s["Valor aprobado"]||"")+'"><p class="hint">Vacío = valor × %</p></div>'+
+          '<div><label>Artículo del reglamento</label><input id="ap_art_'+r+'" value="'+esc(s["Artículo aplicado"]||"")+'"></div></div>'+
+          '<label>Verificación de documentos</label><div class="ap-grid v4">'+
+          '<div><label style="font-weight:700">Carta de solicitud</label>'+vsel("ap_v1",s["Carta solicitud incluida"])+'</div>'+
+          '<div><label style="font-weight:700">Documento de identidad</label>'+vsel("ap_v2",s["Documento identidad incluido"])+'</div>'+
+          '<div><label style="font-weight:700">Comprobante de pago</label>'+vsel("ap_v3",s["Soporte pago incluido"])+'</div>'+
+          '<div><label style="font-weight:700">Certificación bancaria</label>'+vsel("ap_v4",s["Certificación bancaria incluida"])+'</div></div>';
+        b='<button type="button" class="btn-green btn-small" onclick="accionUna(\''+r+'\',\'APROBAR_FINANCIAMIENTO\')">Aprobar</button>'+
+          '<button type="button" class="btn-orange btn-small" onclick="accionUna(\''+r+'\',\'SUBSANACION\')">Solicitar subsanación</button>'+
+          '<button type="button" class="btn-red btn-small" onclick="accionUna(\''+r+'\',\'RECHAZAR_FINANCIAMIENTO\')">Rechazar</button>';
+      }
+    } else if(rol==="TESORERIA"){
+      if(e==="ENVIADA A TESORERÍA") b+='<button type="button" class="btn-green btn-small" onclick="accionUna(\''+r+'\',\'PROGRAMAR_PAGO\')">Programar pago</button>';
+      b+='<button type="button" class="btn-green btn-small" '+(s["Comprobante pago"]?'':'title="Cargue primero el comprobante de pago"')+' onclick="accionUna(\''+r+'\',\'PAGO_REALIZADO\')">Pago realizado'+(s["Comprobante pago"]?'':' (falta comprobante)')+'</button>'+
+         '<button type="button" class="btn-orange btn-small" onclick="accionUna(\''+r+'\',\'DEVOLVER\')">Devolver a Financiamiento</button>';
+    } else {
+      b='<button type="button" class="btn-green btn-small" onclick="accionUna(\''+r+'\',\'APROBAR\')">Aprobar</button>'+
+        '<button type="button" class="btn-orange btn-small" onclick="accionUna(\''+r+'\',\'DEVOLVER\')">Devolver a Financiamiento</button>';
+    }
+
+    if(rol==="CARTERA"&&!s["Estado de cuenta PDF"]) extra+='<p class="hint" style="display:block;color:#B42318"><b>Falta el estado de cuenta.</b> Adjúntelo en la sección "Estado de cuenta" para poder aprobar.</p>';
+    return '<div class="acciones">'+extra+
+      '<label>Observación'+(rol==="ADMIN"?' <span class="hint" style="display:inline">(en subsanación y rechazo se muestra al estudiante)</span>':'')+'</label>'+
+      '<textarea id="obs_'+r+'" placeholder="Observación para trazabilidad"></textarea>'+
+      '<div class="mini-actions" style="justify-content:flex-start">'+b+'</div></div>';
+  }
+
+  function editarHtml(s){
+    var r=esc(s["Radicado"]);
+    var campos=EDIT_FIELDS.map(function(f,i){
+      var id="ed_"+r+"_"+i, v=s[f[0]]||"", full=f[2]==="full"?'full':'', ctl="";
+      if(Array.isArray(f[1])){
+        var opts=f[1].slice(); if(v&&opts.indexOf(v)<0) opts.push(v);
+        ctl='<select id="'+id+'">'+opts.map(function(o){ return '<option value="'+esc(o)+'"'+(o===v?' selected':'')+'>'+esc(o||"—")+'</option>'; }).join("")+'</select>';
+      } else if(f[1]==="area"){ ctl='<textarea id="'+id+'">'+esc(v)+'</textarea>'; }
+      else { ctl='<input id="'+id+'" type="'+(f[1]==="number"?'number':'text')+'" value="'+esc(v)+'">'; }
+      return '<div class="'+full+'"><label>'+esc(f[0])+'</label>'+ctl+'</div>';
+    }).join("");
+
+    return '<details class="editar"><summary>Editar expediente y archivos (administrador)</summary>'+
+      '<div class="edit-grid">'+campos+'</div>'+
+      '<p class="hint">Al cambiar Estado o Etapa se reasigna el responsable. Todo cambio queda registrado en el historial.</p>'+
+      '<div class="mini-actions" style="justify-content:flex-start"><button type="button" class="btn-green btn-small" onclick="guardarEdicion(\''+r+'\')">Guardar cambios</button></div>'+
+      '<hr style="border:0;border-top:1px solid var(--borde);margin:14px 0">'+
+      '<label>Periodo de recepción (hoja) — actual: <b>'+esc(s["Periodo recepción"]||"—")+'</b></label>'+
+      '<div class="mini-actions" style="justify-content:flex-start"><select id="mv_'+r+'">'+(S.periodos||[]).map(function(p){ return '<option value="'+esc(p.periodo)+'"'+(p.periodo===s["Periodo recepción"]?' selected':'')+'>'+esc(p.periodo)+' ('+esc(p.hoja)+')</option>'; }).join("")+'</select>'+
+      '<button type="button" class="btn-orange btn-small" onclick="moverPeriodo(\''+r+'\')">Mover a ese periodo</button></div>'+
+      '<hr style="border:0;border-top:1px solid var(--borde);margin:14px 0">'+
+      '<label>Reemplazar PDF de soportes</label>'+
+      '<input type="file" id="pdf_'+r+'" accept="application/pdf,.pdf" onchange="prepararReemplazo(\''+r+'\',this)">'+
+      '<p class="hint">El PDF anterior se conserva en la carpeta del caso con el prefijo REEMPLAZADO.</p>'+
+      '<div class="mini-actions" style="justify-content:flex-start"><button type="button" class="btn-orange btn-small" onclick="reemplazarPdf(\''+r+'\')">Reemplazar PDF</button></div>'+
+    '</details>';
+  }
+
+  /* ----- ACCIONES ----- */
+  function accionUna(r,accion){
+    var obs=val("obs_"+r), datos={};
+    if(accion==="APROBAR_FINANCIAMIENTO"){
+      var valor=val("ap_valor_"+r), dev=val("ap_dev_"+r);
+      if(!valor||Number(valor)<=0){ toast("Debe registrar el valor solicitado.","err"); return; }
+      if(!dev){ toast("Debe seleccionar a quién se devuelve.","err"); return; }
+      datos[r]={valorSolicitado:valor,devolverA:dev,porcentaje:val("ap_pct_"+r),valorAprobado:val("ap_apr_"+r),articulo:val("ap_art_"+r),
+        verif:{carta:val("ap_v1_"+r),identidad:val("ap_v2_"+r),pago:val("ap_v3_"+r),banco:val("ap_v4_"+r)}};
+    }
+    ejecutar([r],accion,obs,datos,"INDIVIDUAL");
+  }
+
+  var TEXTO_ACCION={APROBAR_FINANCIAMIENTO:"aprobar",ENVIAR_JEFATURA:"enviar a Jefatura de Financiamiento",SUBSANACION:"solicitar subsanación de",RECHAZAR_FINANCIAMIENTO:"rechazar",APROBAR:"aprobar",REENVIAR_JEFATURA:"reenviar la corrección (si fue devuelta por Cartera va directo a Cartera; en otro caso a Jefatura de Financiamiento)",REENVIAR_CARTERA:"reenviar directamente a Cartera (sin pasar por Jefatura)",DEVOLVER:"devolver a Financiamiento",PROGRAMAR_PAGO:"programar el pago de",PAGO_REALIZADO:"marcar como pagada (se enviará el comprobante al estudiante y finalizará el proceso)"};
+
+  function ejecutar(radicados,accion,obs,datos,modo){
+    if(S.ocupado) return;
+    if(!radicados.length){ toast("Seleccione al menos una solicitud.","err"); return; }
+    if(["DEVOLVER","SUBSANACION","RECHAZAR_FINANCIAMIENTO"].indexOf(accion)>=0&&!obs){ toast("Debe registrar una observación para esta acción.","err"); return; }
+
+    var msg="¿Confirma "+(TEXTO_ACCION[accion]||accion)+" "+(radicados.length===1?"la solicitud "+radicados[0]:radicados.length+" solicitudes")+"?";
+    if(accion==="ENVIAR_JEFATURA"&&radicados.length>1) msg+="\n\nModo: "+(modo==="LOTE"?"UN SOLO LOTE (un único correo a Jefatura de Financiamiento)":"UNA A UNA (sin lote)");
+    if(!confirm(msg)) return;
+
+    S.ocupado=true; toast("Procesando...");
+    run("procesarAcciones",[S.token,{radicados:radicados,accion:accion,observacion:obs,datos:datos,modoEnvio:modo}],function(res){
+      S.ocupado=false;
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudo ejecutar la acción."; if(!errorSesion(m)) toast(m,"err"); return; }
+      var fallos=(res.resultados||[]).filter(function(x){ return !x.ok; });
+      if(fallos.length) alert("Se procesaron "+res.ok+" solicitud(es). No se pudieron procesar "+fallos.length+":\n\n"+fallos.map(function(f){ return f.radicado+": "+f.mensaje; }).join("\n"));
+      else toast(res.ok+" solicitud(es) procesada(s) correctamente."+(res.lote?" Lote "+res.lote+".":""),"ok");
+      S.sel={}; if($("batchObs")) $("batchObs").value="";
+      cargarPanel();
+    },function(m){ S.ocupado=false; if(!errorSesion(m)) toast(m,"err"); });
+  }
+
+  function guardarEdicion(r){
+    var s=S.datos.filter(function(x){ return x["Radicado"]===r; })[0], cambios={};
+    EDIT_FIELDS.forEach(function(f,i){
+      var el=$("ed_"+r+"_"+i); if(!el) return;
+      var nuevo=String(el.value).trim(), antes=String(s[f[0]]||"").trim();
+      if(nuevo!==antes) cambios[f[0]]=nuevo;
+    });
+    if(!Object.keys(cambios).length){ toast("No hay cambios por guardar."); return; }
+    if(!confirm("¿Guardar "+Object.keys(cambios).length+" cambio(s) en el expediente "+r+"?")) return;
+    toast("Guardando...");
+    run("actualizarExpediente",[S.token,r,cambios],function(res){
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudo guardar."; if(!errorSesion(m)) toast(m,"err"); return; }
+      toast(res.mensaje,"ok"); cargarPanel();
+    });
+  }
+
+  function prepararReemplazo(r,input){ leerPdf(input,null,function(a){ archivoReemplazo[r]=a; }); }
+
+  function reemplazarPdf(r){
+    if(!archivoReemplazo[r]){ toast("Seleccione primero el nuevo PDF.","err"); return; }
+    if(!confirm("¿Reemplazar el PDF de soportes del radicado "+r+"?")) return;
+    toast("Subiendo PDF...");
+    run("reemplazarSoportePdf",[S.token,r,archivoReemplazo[r]],function(res){
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudo reemplazar."; if(!errorSesion(m)) toast(m,"err"); return; }
+      delete archivoReemplazo[r]; toast(res.mensaje,"ok"); cargarPanel();
+    });
+  }
+
+  /* ----- ARCHIVOS E HISTORIAL ----- */
+  function verArchivo(r,tipo){
+    toast("Abriendo archivo...");
+    run("obtenerArchivo",[S.token,r,tipo],function(res){
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudo abrir el archivo."; if(!errorSesion(m)) toast(m,"err"); return; }
+      var bin=atob(res.base64), bytes=new Uint8Array(bin.length);
+      for(var i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+      var url=URL.createObjectURL(new Blob([bytes],{type:res.mime||"application/pdf"}));
+      var w=window.open(url,"_blank");
+      if(!w){ var a=document.createElement("a"); a.href=url; a.download=res.nombre||"documento.pdf"; document.body.appendChild(a); a.click(); a.remove(); }
+      $("toast").style.display="none";
+    });
+  }
+
+  function descargarFormato(r,tipo){
+    toast("Generando el formato...");
+    run("descargarFormato",[S.token,r,tipo],function(res){
+      if(!res||!res.success){ var m=(res&&res.error)||"No se pudo generar el formato."; if(!errorSesion(m)) toast(m,"err"); return; }
+      descargarBase64(res.nombre,res.base64,res.mime);
+      toast("Formato descargado.","ok");
+    });
+  }
+
+  function verHistorial(r){
+    var box=$("hist_"+r);
+    if(box.innerHTML){ box.innerHTML=""; return; }
+    box.innerHTML='<div class="hint">Cargando historial...</div>';
+    run("obtenerHistorial",[S.token,r],function(res){
+      if(!res||!res.success){ box.innerHTML='<div class="error">'+esc((res&&res.error)||"No se pudo cargar.")+'</div>'; return; }
+      if(!res.historial.length){ box.innerHTML='<div class="hint">Sin movimientos registrados.</div>'; return; }
+      box.innerHTML='<table class="tbl"><thead><tr><th>Fecha</th><th>Usuario</th><th>Rol</th><th>Acción</th><th>Estado</th><th>Observación</th></tr></thead><tbody>'+
+        res.historial.map(function(h){ return '<tr><td>'+esc(h["Fecha"])+' '+esc(h["Hora"])+'</td><td>'+esc(h["Usuario"])+'</td><td>'+esc(h["Rol"])+'</td><td>'+esc(h["Acción"])+'</td><td>'+esc(h["Estado nuevo"])+'</td><td>'+esc(h["Observación"])+'</td></tr>'; }).join("")+'</tbody></table>';
+    });
+  }
+</script>
+</body>
+</html>
