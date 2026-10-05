@@ -159,6 +159,25 @@ const FUNCIONES_API = [
   "generarReporteExcel", "cambiarMiClave", "listarUsuarios", "establecerClaveUsuario", "ingresarComoPerfil"
 ];
 
+/* Referencias explícitas (no dependen de "this" ni del ámbito global). */
+function mapaApi_() {
+  return {
+    obtenerProgramasDisponibles: obtenerProgramasDisponibles, consultarEstadoPublico: consultarEstadoPublico,
+    guardarSolicitudFormulario: guardarSolicitudFormulario, subsanarSolicitud: subsanarSolicitud,
+    loginInterno: loginInterno, cerrarSesionInterna: cerrarSesionInterna, obtenerPanel: obtenerPanel,
+    procesarAcciones: procesarAcciones, obtenerHistorial: obtenerHistorial, obtenerComentarios: obtenerComentarios,
+    agregarComentario: agregarComentario, obtenerArchivo: obtenerArchivo, descargarFormato: descargarFormato,
+    reemplazarSoportePdf: reemplazarSoportePdf, actualizarExpediente: actualizarExpediente,
+    subirEstadoCuenta: subirEstadoCuenta, subirComprobantePago: subirComprobantePago,
+    enviarComprobanteEstudiante: enviarComprobanteEstudiante, cerrarProcesoAdmin: cerrarProcesoAdmin,
+    guardarSolicitudIcetex: guardarSolicitudIcetex, actualizarSolicitudIcetex: actualizarSolicitudIcetex,
+    obtenerPeriodos: obtenerPeriodos, crearPeriodo: crearPeriodo, actualizarPeriodo: actualizarPeriodo,
+    moverSolicitudPeriodo: moverSolicitudPeriodo, obtenerAlertasPlazos: obtenerAlertasPlazos,
+    enviarAlertasPlazo: enviarAlertasPlazo, generarReporteExcel: generarReporteExcel, cambiarMiClave: cambiarMiClave,
+    listarUsuarios: listarUsuarios, establecerClaveUsuario: establecerClaveUsuario, ingresarComoPerfil: ingresarComoPerfil
+  };
+}
+
 function respuestaJson_(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
@@ -172,7 +191,7 @@ function doPost(e) {
     const fn = String(cuerpo.fn || "");
     if (FUNCIONES_API.indexOf(fn) < 0) return respuestaJson_({ ok: false, error: "Operación no permitida." });
     const args = Array.isArray(cuerpo.args) ? cuerpo.args : [];
-    const f = this[fn] || globalThis[fn];
+    const f = mapaApi_()[fn];
     if (typeof f !== "function") return respuestaJson_({ ok: false, error: "Operación no disponible." });
     return respuestaJson_({ ok: true, data: f.apply(null, args) });
   } catch (err) {

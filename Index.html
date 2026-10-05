@@ -514,10 +514,16 @@
       var url=(window.APP_API_URL||"").trim();
       var falla=function(m){ if(fail) fail(m); else toast(m,"err"); };
       if(!url){ falla("El aplicativo no está configurado (falta la dirección del servidor)."); return; }
-      fetch(url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn:fn,args:args})})
-        .then(function(r){ return r.json(); })
-        .then(function(j){ if(j&&j.ok) ok(j.data); else falla((j&&j.error)||"Error en el servidor."); })
-        .catch(function(){ falla("No se pudo conectar con el servidor. Verifique su conexión e intente de nuevo."); });
+      fetch(url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn:fn,args:args}),redirect:"follow",credentials:"omit"})
+        .then(function(r){ return r.text().then(function(t){ return {st:r.status,t:t}; }); })
+        .then(function(x){
+          var j; try{ j=JSON.parse(x.t); }catch(e){
+            console.error("Respuesta no JSON del backend ("+x.st+"):",x.t.slice(0,300));
+            falla("El servidor de datos no respondió como se esperaba. Verifique que Apps Script tenga publicada la última versión con acceso «Cualquier persona»."); return; }
+          if(j&&j.ok) ok(j.data); else falla((j&&j.error)||"Error en el servidor.");
+        })
+        .catch(function(e){ console.error("Fallo de red/CORS hacia el backend:",e);
+          falla("No se pudo conectar con el servidor de datos. Verifique su conexión; si persiste, revise la implementación de Apps Script."); });
       return;
     }
     var r=google.script.run.withSuccessHandler(ok).withFailureHandler(function(err){
@@ -628,7 +634,7 @@
     var p=$("programa");
     run("obtenerProgramasDisponibles",[],function(res){
       programas=res||{}; p.innerHTML='<option value="">Seleccione primero nivel y modalidad...</option>';
-    },function(){ programas={}; p.innerHTML='<option value="">No se pudieron cargar los programas</option>'; });
+    },function(m){ programas={}; p.innerHTML='<option value="">No se pudieron cargar los programas</option>'; toast(m||"No se pudieron cargar los programas.","err"); });
   }
 
   function actualizarProgramas(){
