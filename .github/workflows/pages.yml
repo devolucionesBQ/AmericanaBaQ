@@ -1,4 +1,4 @@
-name: Publicar en GitHub Pages
+name: Publicar en GitHub Pages (Devoluciones)
 on:
   push:
     branches: [main]
