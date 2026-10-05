@@ -166,6 +166,9 @@ function respuestaJson_(obj) {
 function doPost(e) {
   try {
     const cuerpo = JSON.parse((e && e.postData && e.postData.contents) || "{}");
+    // Si se define la propiedad del script GATEWAY_KEY, solo se atiende a la pasarela que la conoce.
+    const claveGw = PropertiesService.getScriptProperties().getProperty("GATEWAY_KEY");
+    if (claveGw && String(cuerpo.key || "") !== claveGw) return respuestaJson_({ ok: false, error: "Acceso no autorizado." });
     const fn = String(cuerpo.fn || "");
     if (FUNCIONES_API.indexOf(fn) < 0) return respuestaJson_({ ok: false, error: "Operación no permitida." });
     const args = Array.isArray(cuerpo.args) ? cuerpo.args : [];

@@ -1,8 +1,5 @@
 # Devoluciones – Sede Barranquilla
 
-- `Code.gs`, `appsscript.json`: backend en Google Apps Script (publicar como aplicación web).
-- `Index.html`: interfaz. Funciona dentro de Apps Script y también alojada en GitHub Pages.
-- `pages/config.js`: contiene `APP_API_URL`, la URL `/exec` de la implementación de Apps Script.
-- `.github/workflows/pages.yml`: publica `Index.html` en GitHub Pages en cada commit a `main`.
-
-URL pública: https://devolucionesbq.github.io/DevolucionesBQ/
+- `Code.gs`, `appsscript.json`: backend en Google Apps Script (datos en Sheets/Drive, correos).
+- `Index.html`: interfaz (funciona dentro de Apps Script o servida por la pasarela).
+- `server/`: pasarela Node.js para Cloud Run (`Dockerfile` en la raíz). Ver `docs/DESPLIEGUE.md`.
