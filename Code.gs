@@ -3056,13 +3056,14 @@ function enviarCorreoInstitucional_(opciones, o) {
   MailApp.sendEmail(m);
 }
 
-/* Si existe la propiedad del script URL_PUBLICA (p. ej. https://devolucionesbq.github.io/DevolucionesBQ/), los correos enlazan a esa dirección. */
+/* Enlace que aparece en los correos. Puede cambiarse con la propiedad del script URL_PUBLICA. */
+const URL_PUBLICA_PREDETERMINADA = "https://devolucionesbq.github.io/AmericanaBaQ/";
 function urlApp_() {
   try {
     const pub = PropertiesService.getScriptProperties().getProperty("URL_PUBLICA");
     if (pub) return pub;
   } catch (e) {}
-  try { return ScriptApp.getService().getUrl(); } catch (e) { return ""; }
+  return URL_PUBLICA_PREDETERMINADA;
 }
 
 function enviarCorreoRadicadoEstudiante_(payload, radicado) {
