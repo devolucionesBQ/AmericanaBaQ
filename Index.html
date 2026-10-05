@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<!--CONFIG-->
   <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -507,7 +508,18 @@
     toast._t=setTimeout(function(){ t.style.display="none"; }, 5200);
   }
 
+  /* Dentro de Apps Script usa google.script.run; alojado en GitHub Pages llama al API (APP_API_URL, definido en config.js). */
   function run(fn,args,ok,fail){
+    if(!(window.google&&google.script&&google.script.run)){
+      var url=(window.APP_API_URL||"").trim();
+      var falla=function(m){ if(fail) fail(m); else toast(m,"err"); };
+      if(!url){ falla("El aplicativo no está configurado (falta la dirección del servidor)."); return; }
+      fetch(url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({fn:fn,args:args})})
+        .then(function(r){ return r.json(); })
+        .then(function(j){ if(j&&j.ok) ok(j.data); else falla((j&&j.error)||"Error en el servidor."); })
+        .catch(function(){ falla("No se pudo conectar con el servidor. Verifique su conexión e intente de nuevo."); });
+      return;
+    }
     var r=google.script.run.withSuccessHandler(ok).withFailureHandler(function(err){
       var m=err&&err.message?err.message:String(err);
       if(fail) fail(m); else toast(m,"err");

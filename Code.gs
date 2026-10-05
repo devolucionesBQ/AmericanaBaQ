@@ -143,7 +143,42 @@ const ENCABEZADOS_PAQUETES = [
  * WEB APP
  *************************************************/
 
+/*************************************************
+ * API PARA EL ALOJAMIENTO EXTERNO (GitHub Pages)
+ * La interfaz publicada en GitHub Pages llama a este
+ * endpoint (POST con JSON {fn, args}) en lugar de
+ * google.script.run. Solo se exponen estas funciones.
+ *************************************************/
+const FUNCIONES_API = [
+  "obtenerProgramasDisponibles", "consultarEstadoPublico", "guardarSolicitudFormulario", "subsanarSolicitud",
+  "loginInterno", "cerrarSesionInterna", "obtenerPanel", "procesarAcciones", "obtenerHistorial",
+  "obtenerComentarios", "agregarComentario", "obtenerArchivo", "descargarFormato", "reemplazarSoportePdf",
+  "actualizarExpediente", "subirEstadoCuenta", "subirComprobantePago", "enviarComprobanteEstudiante",
+  "cerrarProcesoAdmin", "guardarSolicitudIcetex", "actualizarSolicitudIcetex", "obtenerPeriodos",
+  "crearPeriodo", "actualizarPeriodo", "moverSolicitudPeriodo", "obtenerAlertasPlazos", "enviarAlertasPlazo",
+  "generarReporteExcel", "cambiarMiClave", "listarUsuarios", "establecerClaveUsuario", "ingresarComoPerfil"
+];
+
+function respuestaJson_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  try {
+    const cuerpo = JSON.parse((e && e.postData && e.postData.contents) || "{}");
+    const fn = String(cuerpo.fn || "");
+    if (FUNCIONES_API.indexOf(fn) < 0) return respuestaJson_({ ok: false, error: "Operación no permitida." });
+    const args = Array.isArray(cuerpo.args) ? cuerpo.args : [];
+    const f = this[fn] || globalThis[fn];
+    if (typeof f !== "function") return respuestaJson_({ ok: false, error: "Operación no disponible." });
+    return respuestaJson_({ ok: true, data: f.apply(null, args) });
+  } catch (err) {
+    return respuestaJson_({ ok: false, error: err && err.message ? err.message : String(err) });
+  }
+}
+
 function doGet(e) {
+  if (e && e.parameter && e.parameter.api === "ping") return respuestaJson_({ ok: true, data: "Devoluciones API activa" });
   return HtmlService
     .createHtmlOutputFromFile("Index")
     .setTitle("Módulo de Devoluciones - Sede Barranquilla")
@@ -2999,7 +3034,12 @@ function enviarCorreoInstitucional_(opciones, o) {
   MailApp.sendEmail(m);
 }
 
+/* Si existe la propiedad del script URL_PUBLICA (p. ej. https://devolucionesbq.github.io/DevolucionesBQ/), los correos enlazan a esa dirección. */
 function urlApp_() {
+  try {
+    const pub = PropertiesService.getScriptProperties().getProperty("URL_PUBLICA");
+    if (pub) return pub;
+  } catch (e) {}
   try { return ScriptApp.getService().getUrl(); } catch (e) { return ""; }
 }
 
