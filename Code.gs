@@ -33,7 +33,7 @@ const HOJA_PROGRAMAS = "Programas";
 const CORREO_ADMIN = "devoluciones@americana.edu.co";
 
 // false = PRODUCCIÓN (los correos salen a estudiantes, áreas y coordinadores en copia). true = pruebas: todo llega a CORREO_PRUEBAS.
-const MODO_PRUEBAS = false;
+const MODO_PRUEBAS = true;   // true = PRUEBAS (los correos a estudiantes y coordinadores van a CORREO_PRUEBAS) | false = PRODUCCIÓN
 const CORREO_PRUEBAS = "devoluciones@americana.edu.co";
 
 const SESION_SEGUNDOS = 21600; // 6 horas
